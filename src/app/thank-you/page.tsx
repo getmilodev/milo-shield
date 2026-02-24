@@ -20,6 +20,9 @@ function ThankYouContent() {
   const isShield = product === "shield";
   const isGuide = product === "guide";
   const isEssentials = product === "essentials";
+  const isFieldManual = product === "field-manual";
+  const isAudit = product === "audit";
+  const isSetup = product === "setup";
 
   return (
     <main className="min-h-screen flex items-center justify-center px-6 noise-bg">
@@ -131,6 +134,77 @@ openclaw gateway restart`}
               <p className="text-xs text-gray-500 mt-2">
                 All 5 skills will be available immediately after restart.
               </p>
+            </div>
+          </div>
+        )}
+
+        {isFieldManual && (
+          <div className="rounded-2xl bg-gray-900/80 border border-cyan-500/30 p-8 mb-8 relative overflow-hidden">
+            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
+            <div className="w-14 h-14 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center mx-auto mb-4">
+              <BookOpen className="w-7 h-7 text-cyan-400" />
+            </div>
+            <h2 className="text-2xl font-bold mb-2">The OpenClaw Field Manual</h2>
+            <p className="text-gray-400 text-sm mb-6">
+              Your guide is ready. 10 chapters of production-tested configs, troubleshooting trees, and expert knowledge.
+            </p>
+            <a
+              href="/downloads/The-OpenClaw-Field-Manual.pdf"
+              download
+              className="inline-flex items-center justify-center gap-2 w-full py-4 rounded-xl font-semibold text-lg bg-cyan-600 hover:bg-cyan-500 transition-colors"
+            >
+              <Download className="w-5 h-5" />
+              Download Field Manual (PDF)
+            </a>
+            <p className="text-xs text-gray-500 mt-3 flex items-center justify-center gap-1">
+              <Lock className="w-3 h-3" />
+              Bookmark this page for re-download access.
+            </p>
+          </div>
+        )}
+
+        {isAudit && (
+          <div className="rounded-2xl bg-gray-900/80 border border-purple-500/30 p-8 mb-8 relative overflow-hidden">
+            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
+            <div className="w-14 h-14 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center mx-auto mb-4">
+              <Shield className="w-7 h-7 text-purple-400" />
+            </div>
+            <h2 className="text-2xl font-bold mb-2">AI Agent Audit</h2>
+            <p className="text-gray-400 text-sm mb-6">
+              Your audit is booked! We&apos;ll email you at your purchase email within 24 hours
+              with a secure form to share your config files. Expect your full report within 48 hours.
+            </p>
+            <div className="rounded-xl bg-gray-950 border border-gray-800 p-4 text-left">
+              <h3 className="text-sm font-semibold text-gray-300 mb-2">What happens next:</h3>
+              <ol className="text-sm text-gray-400 space-y-2 list-decimal list-inside">
+                <li>Check your email for the intake form (within 24h)</li>
+                <li>Share your SOUL.md, AGENTS.md, openclaw.json (secrets redacted)</li>
+                <li>We analyze everything and write your report</li>
+                <li>Full audit report delivered to your email (within 48h)</li>
+              </ol>
+            </div>
+          </div>
+        )}
+
+        {isSetup && (
+          <div className="rounded-2xl bg-gray-900/80 border border-amber-500/30 p-8 mb-8 relative overflow-hidden">
+            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-amber-500/50 to-transparent" />
+            <div className="w-14 h-14 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mx-auto mb-4">
+              <Terminal className="w-7 h-7 text-amber-400" />
+            </div>
+            <h2 className="text-2xl font-bold mb-2">Done-For-You Setup</h2>
+            <p className="text-gray-400 text-sm mb-6">
+              Your setup is booked! We&apos;ll reach out within 24 hours to schedule
+              SSH access and start building your production OpenClaw instance.
+            </p>
+            <div className="rounded-xl bg-gray-950 border border-gray-800 p-4 text-left">
+              <h3 className="text-sm font-semibold text-gray-300 mb-2">What happens next:</h3>
+              <ol className="text-sm text-gray-400 space-y-2 list-decimal list-inside">
+                <li>Check your email for scheduling details (within 24h)</li>
+                <li>We&apos;ll need SSH access + your Google/WhatsApp accounts ready</li>
+                <li>Build takes 2-3 days (you&apos;ll need 15-20 min for QR codes & OAuth)</li>
+                <li>Full handover with documentation + 30 days email support</li>
+              </ol>
             </div>
           </div>
         )}

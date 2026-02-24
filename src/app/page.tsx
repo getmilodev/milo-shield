@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import {
   Shield,
   Scan,
@@ -263,8 +263,8 @@ function Nav() {
           <span className="text-lg font-bold tracking-tight">Milo</span>
         </a>
         <div className="hidden sm:flex items-center gap-8">
-          <a href="#audit" className="text-sm text-gray-400 hover:text-gray-100 transition-colors">Audit</a>
-          <a href="#shield" className="text-sm text-gray-400 hover:text-gray-100 transition-colors">Shield</a>
+          <a href="#audit" className="text-sm text-gray-400 hover:text-gray-100 transition-colors">Scan</a>
+          <a href="/services" className="text-sm text-cyan-400 hover:text-cyan-300 transition-colors font-medium">Services</a>
           <a href="/setup" className="text-sm text-gray-400 hover:text-gray-100 transition-colors">Setup</a>
           <a href="/blog" className="text-sm text-gray-400 hover:text-gray-100 transition-colors">Blog</a>
           <a
@@ -344,6 +344,144 @@ const testimonials = [
     author: "@openclaw_newbie",
   },
 ];
+
+/* ---------- email capture modal ---------- */
+function EmailCaptureModal({
+  isOpen,
+  onClose,
+  product,
+  stripeUrl,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  product: string;
+  stripeUrl: string;
+}) {
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.trim()) return;
+
+    setLoading(true);
+    setError("");
+
+    try {
+      await fetch("/api/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: email.trim(),
+          source: `checkout-${product}`,
+          product,
+        }),
+      });
+    } catch {
+      // Don't block checkout if email capture fails
+    }
+
+    // Always redirect to Stripe, even if email capture failed
+    window.open(stripeUrl, "_blank");
+    setLoading(false);
+    onClose();
+  };
+
+  const handleSkip = () => {
+    window.open(stripeUrl, "_blank");
+    onClose();
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
+      <div className="relative w-full max-w-md rounded-2xl bg-gray-900 border border-gray-700 p-8 animate-fade-in-up">
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-gray-500 hover:text-gray-300 transition-colors"
+        >
+          ✕
+        </button>
+        <div className="text-center mb-6">
+          <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mx-auto mb-4">
+            <Lock className="w-6 h-6 text-emerald-400" />
+          </div>
+          <h3 className="text-xl font-bold mb-2">Almost there</h3>
+          <p className="text-gray-400 text-sm">
+            Enter your email so we can send your download link and receipt.
+          </p>
+        </div>
+
+        <form onSubmit={handleSubmit}>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="you@example.com"
+            className="w-full px-4 py-3 rounded-xl bg-gray-950 border border-gray-700 text-gray-200 placeholder-gray-500 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none transition-colors text-sm"
+            autoFocus
+            required
+          />
+          {error && <p className="text-red-400 text-xs mt-2">{error}</p>}
+          <button
+            type="submit"
+            disabled={loading || !email.trim()}
+            className="w-full mt-4 py-3 rounded-xl font-semibold bg-emerald-600 hover:bg-emerald-500 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+          >
+            {loading ? "Redirecting..." : "Continue to Checkout"}
+            <ArrowRight className="w-4 h-4" />
+          </button>
+        </form>
+
+        <button
+          onClick={handleSkip}
+          className="w-full mt-3 text-sm text-gray-500 hover:text-gray-300 transition-colors"
+        >
+          Skip — go straight to checkout
+        </button>
+
+        <p className="text-xs text-gray-600 mt-4 text-center">
+          No spam. Just your download link + one follow-up if you need help.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+/* ---------- buy button wrapper ---------- */
+function BuyButton({
+  href,
+  product,
+  children,
+  className,
+}: {
+  href: string;
+  product: string;
+  children: React.ReactNode;
+  className?: string;
+}) {
+  const [showModal, setShowModal] = useState(false);
+
+  return (
+    <>
+      <button
+        onClick={() => setShowModal(true)}
+        className={className}
+      >
+        {children}
+      </button>
+      <EmailCaptureModal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        product={product}
+        stripeUrl={href}
+      />
+    </>
+  );
+}
 
 /* ---------- page ---------- */
 export default function Home() {
@@ -524,15 +662,14 @@ channels:
                         skills for malware, checks for prompt injection, verifies
                         network exposure, and generates a fix-it-for-me script.
                       </p>
-                      <a
+                      <BuyButton
                         href="https://buy.stripe.com/6oUdR870h1YraRQ1pYfIs00"
-                        target="_blank"
-                        rel="noopener"
+                        product="shield"
                         className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold bg-emerald-600 hover:bg-emerald-500 transition-colors"
                       >
                         Get Milo Shield — $29
                         <ArrowRight className="w-4 h-4" />
-                      </a>
+                      </BuyButton>
                     </div>
                   </div>
                 </div>
@@ -631,15 +768,14 @@ channels:
                   </li>
                 ))}
               </ul>
-              <a
+              <BuyButton
                 href="https://buy.stripe.com/6oUdR870h1YraRQ1pYfIs00"
-                target="_blank"
-                rel="noopener"
+                product="shield"
                 className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl font-semibold bg-emerald-600 hover:bg-emerald-500 transition-colors text-lg"
               >
                 Buy Milo Shield — $29
                 <ExternalLink className="w-4 h-4" />
-              </a>
+              </BuyButton>
               <p className="text-xs text-gray-500 mt-3 flex items-center justify-center gap-1">
                 <Lock className="w-3 h-3" />
                 Secure checkout via Stripe. Instant download.
@@ -672,11 +808,10 @@ channels:
                 </div>
               </a>
 
-              <a
+              <BuyButton
                 href="https://buy.stripe.com/6oUdR870h1YraRQ1pYfIs00"
-                target="_blank"
-                rel="noopener"
-                className="p-6 rounded-xl bg-emerald-900/15 border border-emerald-700/40 hover:border-emerald-500/60 transition-all group"
+                product="shield"
+                className="p-6 rounded-xl bg-emerald-900/15 border border-emerald-700/40 hover:border-emerald-500/60 transition-all group text-left"
               >
                 <div className="flex items-center gap-3 mb-3">
                   <div className="w-10 h-10 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
@@ -689,13 +824,12 @@ channels:
                 <div className="text-emerald-400 text-sm font-semibold flex items-center gap-1 group-hover:gap-2 transition-all">
                   $29 <ChevronRight className="w-4 h-4" />
                 </div>
-              </a>
+              </BuyButton>
 
-              <a
+              <BuyButton
                 href="https://buy.stripe.com/3cI4gy4S946z5xwfgOfIs01"
-                target="_blank"
-                rel="noopener"
-                className="p-6 rounded-xl bg-emerald-900/15 border border-emerald-700/40 hover:border-emerald-500/60 transition-all group"
+                product="guide"
+                className="p-6 rounded-xl bg-emerald-900/15 border border-emerald-700/40 hover:border-emerald-500/60 transition-all group text-left"
               >
                 <div className="flex items-center gap-3 mb-3">
                   <div className="w-10 h-10 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
@@ -708,7 +842,7 @@ channels:
                 <div className="text-emerald-400 text-sm font-semibold flex items-center gap-1 group-hover:gap-2 transition-all">
                   $19 <ChevronRight className="w-4 h-4" />
                 </div>
-              </a>
+              </BuyButton>
             </div>
 
             {/* Milo Essentials — Featured Bundle */}
@@ -733,21 +867,37 @@ channels:
                 <div className="text-center md:text-right flex-shrink-0">
                   <div className="text-4xl font-extrabold text-white mb-1">$49</div>
                   <div className="text-sm text-gray-400 mb-4 line-through">$125 separately</div>
-                  <a
+                  <BuyButton
                     href="https://buy.stripe.com/4gMaEW84l7iL8JIecKfIs02"
-                    target="_blank"
-                    rel="noopener"
+                    product="essentials"
                     className="inline-flex items-center gap-2 px-8 py-3 rounded-xl font-semibold bg-emerald-600 hover:bg-emerald-500 transition-colors text-white"
                   >
                     Get the Bundle
                     <ChevronRight className="w-4 h-4" />
-                  </a>
+                  </BuyButton>
                 </div>
               </div>
             </div>
 
+            {/* New: Services Banner */}
+            <div className="mt-6 p-6 rounded-2xl bg-gradient-to-r from-cyan-950/50 via-purple-950/50 to-amber-950/50 border border-cyan-500/20 relative overflow-hidden">
+              <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-cyan-500/50 via-purple-500/50 to-amber-500/50" />
+              <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+                <div>
+                  <h3 className="text-lg font-bold text-white mb-1">Need more than tools?</h3>
+                  <p className="text-gray-400 text-sm">The Field Manual ($49) &bull; Agent Audit ($199) &bull; Done-For-You Setup ($399)</p>
+                </div>
+                <a
+                  href="/services"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-400 hover:to-purple-400 transition text-black text-sm whitespace-nowrap"
+                >
+                  View Services <ArrowRight className="w-4 h-4" />
+                </a>
+              </div>
+            </div>
+
             {/* Roadmap */}
-            <div className="mt-6 p-4 rounded-xl bg-gray-900/30 border border-gray-800/50 text-center">
+            <div className="mt-4 p-4 rounded-xl bg-gray-900/30 border border-gray-800/50 text-center">
               <div className="text-sm text-gray-400 flex items-center justify-center gap-1.5">
                 <Zap className="w-4 h-4 text-yellow-400" />
                 Coming soon: <strong className="text-gray-300 ml-1">Milo Watch</strong> — agent observability dashboard (March 2026)

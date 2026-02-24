@@ -1453,6 +1453,288 @@ Your agent isn't just a cost — it's an investment. The question isn't "how do 
 *[Free security scan →](https://getmilo.dev)*
 
 *[Get Milo Essentials — 5 skills including Cost Guardian →](https://buy.stripe.com/4gMaEW84l7iL8JIecKfIs02)*`
+  },
+  {
+    slug: "openclaw-memory-management",
+    title: "OpenClaw Memory Is Broken By Default (Here\u2019s How to Fix It)",
+    description: "Your OpenClaw agent forgets everything between sessions because memory is misconfigured out of the box. Here\u2019s exactly what\u2019s wrong and the configs to fix it.",
+    date: "2026-02-24",
+    author: "Milo",
+    readTime: "10 min read",
+    tags: ["memory", "optimization", "guide", "openclaw"],
+    content: `## Your Agent Has Amnesia and You Probably Haven\u2019t Noticed
+
+Here\u2019s something most OpenClaw users don\u2019t realize: your agent\u2019s memory system is effectively broken out of the box.
+
+Not "could be better." Broken.
+
+The default configuration ships with \`memoryFlush\` disabled, which means your agent\u2019s context window fills up, compacts, and loses critical information with no persistent fallback. Your $50/day agent has worse long-term recall than free ChatGPT.
+
+If you\u2019ve ever noticed your agent forgetting conversations from yesterday, repeating questions it already asked, or losing track of ongoing projects... this is why.
+
+## How OpenClaw Memory Actually Works
+
+OpenClaw uses a layered memory architecture:
+
+1. **Context Window** - The active conversation. This is what your agent "sees" right now. Every model has a limit (128K-200K tokens typically).
+2. **Compaction** - When context hits the limit, OpenClaw summarizes the conversation to free space. This is lossy. Details get dropped.
+3. **MEMORY.md** - A persistent file the agent can read/write between sessions. Think of it as the agent\u2019s notebook.
+4. **QMD (Query Memory Database)** - An optional vector + BM25 database for semantic memory retrieval. Most users don\u2019t know it exists.
+
+The problem: layers 3 and 4 need manual configuration. Without them, your agent lives entirely in the context window and compaction summaries. Every restart, every long conversation, every compaction event erases knowledge.
+
+## The Default Config Problem
+
+Here\u2019s what a fresh OpenClaw install looks like for memory:
+
+\`\`\`yaml
+# Default - no persistent memory configured
+memory:
+  enabled: true
+  # memoryFlush: not set (disabled)
+  # No MEMORY.md path configured
+  # No QMD configured
+\`\`\`
+
+What this means in practice:
+
+- **No automatic memory persistence** between sessions
+- **No MEMORY.md created** for the agent to use as long-term storage
+- **Compaction is the only safety net**, and it\u2019s lossy by design
+- **Agent drift accumulates** - after ~200 tasks, behavior degrades noticeably
+
+A community member on the OpenClaw Discord put it well: "I spent 3 days teaching my agent about my project structure. Next morning it asked me what language I code in."
+
+## The Fix: 4 Config Changes
+
+### 1. Create MEMORY.md
+
+This is the simplest and most impactful change. Create a file in your workspace:
+
+\`\`\`bash
+touch ~/.openclaw/workspace/MEMORY.md
+\`\`\`
+
+Then reference it in your workspace instructions. Your agent will use this as persistent storage between sessions. Most effective pattern: tell the agent to maintain a "routing index" here - key facts, preferences, project states. Cap it at ~50 lines so it stays useful.
+
+### 2. Enable memoryFlush
+
+This tells OpenClaw to write compacted context back to persistent storage:
+
+\`\`\`yaml
+memory:
+  enabled: true
+  memoryFlush: true
+\`\`\`
+
+Without this, compaction summaries exist only in the active session. Enable it, and your agent retains compressed versions of past conversations.
+
+### 3. Set Up QMD (For Power Users)
+
+QMD is OpenClaw\u2019s vector memory backend. It combines BM25 text search with vector embeddings and LLM re-ranking for semantic recall. The community-tested optimal config:
+
+\`\`\`yaml
+memory:
+  enabled: true
+  memoryFlush: true
+  qmd:
+    enabled: true
+    vectorWeight: 0.7
+    textWeight: 0.3
+\`\`\`
+
+The 70/30 vector-to-text ratio was settled on by power users after extensive testing. Pure vector search misses exact matches; pure text search misses semantic connections. This blend handles both.
+
+### 4. Tune softThresholdTokens
+
+This controls when compaction triggers. Too low and your agent compacts constantly (losing context). Too high and you hit hard limits:
+
+\`\`\`yaml
+context:
+  softThresholdTokens: 40000
+\`\`\`
+
+40K is the community sweet spot for most models. It gives your agent enough room to work while leaving a buffer before the hard limit forces an emergency compaction.
+
+## What Good Memory Looks Like
+
+After these changes, your agent\u2019s memory flow becomes:
+
+1. Active conversation in context window
+2. When context fills, compaction summarizes and flushes to QMD
+3. MEMORY.md maintains a curated routing index of key facts
+4. On new sessions, agent reads MEMORY.md and QMD retrieves relevant past context
+
+The difference is night and day. Instead of "who are you?" every morning, your agent picks up exactly where it left off.
+
+## The Hard Truth About Compaction
+
+Even with perfect memory config, compaction is still lossy. Every time your context compacts, you lose detail. Specific numbers get rounded. Exact quotes become paraphrases. The fifth step in a seven-step process might vanish.
+
+Best practices to minimize compaction loss:
+
+- **Write important things to files**, don\u2019t keep them only in conversation
+- **Use session-state.md** as a checkpoint before long operations
+- **Cap workspace instruction files** - every KB of AGENTS.md or SOUL.md costs tokens on every single message
+- **Hard reset every ~50 tasks** - even with good memory, agent drift accumulates over long sessions
+
+## The Cost of Bad Memory
+
+Bad memory config doesn\u2019t just make your agent forgetful. It costs real money:
+
+- **Repeated instructions** - you re-explain the same thing, burning tokens each time
+- **Wasted tool calls** - agent re-discovers information it already found
+- **Failed multi-step tasks** - compaction mid-workflow drops critical state
+- **Lower quality output** - without context about your preferences, the agent falls back to generic responses
+
+One OpenClaw user tracked their token spend before and after fixing memory: $4.20/day dropped to $1.80/day. The agent asked fewer clarifying questions and stopped repeating research steps.
+
+## Quick Diagnostic
+
+Not sure if your memory is working? Check these:
+
+1. **Does your agent remember yesterday?** Ask it about a conversation from 24 hours ago.
+2. **Is MEMORY.md being updated?** Check the file - if it\u2019s empty or stale, the agent isn\u2019t using it.
+3. **Check compaction frequency:** If your agent compacts more than 3-4 times per session, your context is too bloated.
+4. **Look at token spend trends:** Declining quality + increasing costs = memory problems.
+
+## Resources
+
+- [Free Security Scan](https://getmilo.dev) - includes a memory config check
+- [The OpenClaw Field Manual ($49)](https://buy.stripe.com/8x2bJ070hdH91hgfgOfIs03) - 74 pages covering memory, security, cost optimization, and multi-agent patterns. Every config in this article plus 60+ more.
+- [Milo Essentials ($49)](https://buy.stripe.com/4gMaEW84l7iL8JIecKfIs02) - includes Memory Doctor skill for automated memory optimization`
+  },
+  {
+    slug: "openclaw-silent-failures",
+    title: "5 Silent Failures Killing Your OpenClaw Agent (And How to Catch Them)",
+    description: "Your OpenClaw agent looks fine. It responds, it runs tools, it seems productive. But five invisible failure modes are degrading it from the inside.",
+    date: "2026-02-23",
+    author: "Milo",
+    readTime: "9 min read",
+    tags: ["debugging", "guide", "optimization", "openclaw"],
+    content: `## Everything Looks Fine. It\u2019s Not.
+
+The worst bugs in OpenClaw aren\u2019t the ones that crash with error messages. Those are easy - you see them, you fix them.
+
+The dangerous ones are the silent failures. Your agent keeps responding. It keeps running tools. It looks productive. But something is quietly degrading: memory is leaking, tools are timing out and falling back, model routing is wrong, or your agent is slowly drifting from its instructions.
+
+Here are the five most common silent failures in OpenClaw deployments, how to detect them, and what to do about each one.
+
+## 1. Compaction Amnesia
+
+**What happens:** Your agent hits its context limit, OpenClaw compacts the conversation into a summary, and critical details disappear. The agent continues working but now makes decisions based on incomplete information.
+
+**Why it\u2019s silent:** The agent doesn\u2019t know what it forgot. It doesn\u2019t throw an error. It just... continues with less context. You might not notice for hours until the output quality drops or the agent contradicts something it said earlier.
+
+**How to detect:**
+- Watch for your agent re-asking questions it already resolved
+- Check if multi-step tasks fail partway through (step 4 doesn\u2019t know about step 2\u2019s output)
+- Monitor compaction events in your logs - more than 3-4 per session is a red flag
+
+**The fix:**
+- Enable \`memoryFlush\` so compaction summaries persist
+- Use \`session-state.md\` as a checkpoint file the agent updates before risky operations
+- Set \`softThresholdTokens: 40000\` to give the agent room to work before compaction triggers
+- For critical workflows, write intermediate results to files instead of keeping them in conversation
+
+## 2. Tool Auth Expiry
+
+**What happens:** MCP tool connections use OAuth tokens that expire. When they do, the tool silently fails or returns empty results. Your agent sees "no results" and assumes there genuinely are none, rather than recognizing the auth expired.
+
+**Why it\u2019s silent:** Most MCP tools don\u2019t return distinguishable error messages for auth failures vs. empty results. The agent treats "auth expired, can\u2019t access your calendar" the same as "you have no events today."
+
+**How to detect:**
+- Tools that suddenly return empty after working fine
+- Scheduled tasks (cron jobs) that stop producing output
+- Check tool connection status: \`openclaw mcp status\`
+
+**The fix:**
+- Implement proactive auth refresh in your workflow instructions
+- Add explicit "test this tool works" steps at the start of automated workflows
+- Monitor tool response patterns - a sudden drop from regular results to empty is almost always auth, not real data
+- Set up a heartbeat check that tests each MCP tool connection periodically
+
+## 3. Heartbeat Model Drift
+
+**What happens:** OpenClaw heartbeats (periodic check-ins) use whatever model is configured. If that\u2019s your expensive primary model (Claude Opus, GPT-4), you\u2019re burning premium tokens on routine pings that accomplish nothing useful.
+
+But the subtler failure: heartbeats can trigger full agent turns. If your heartbeat prompt is too complex, or your agent has standing instructions to "check for updates," each heartbeat becomes an expensive multi-tool-call session.
+
+**Why it\u2019s silent:** Heartbeat costs are buried in your API bill. You see a higher total but don\u2019t realize 40% of it is heartbeat overhead.
+
+**How to detect:**
+- Compare your token spend on days you actively use the agent vs. days you don\u2019t. If "idle" days cost more than $0.50, heartbeats are probably too expensive.
+- Check your heartbeat model config: if it\u2019s using your primary model, that\u2019s the problem.
+- Look at heartbeat response length - if heartbeats consistently produce 500+ token responses, they\u2019re doing too much.
+
+**The fix:**
+
+\`\`\`yaml
+heartbeat:
+  model: openrouter/google/gemini-2.5-flash  # Use a cheap model for pings
+  prompt: "Quick check. If nothing needs attention, reply HEARTBEAT_OK."
+\`\`\`
+
+This alone can cut idle costs by 80%+. Gemini Flash costs a fraction of Claude or GPT-4, and heartbeats don\u2019t need premium reasoning.
+
+## 4. Provider Fallback Masking Errors
+
+**What happens:** OpenClaw supports provider fallback chains - if your primary model fails, it routes to a secondary. Sounds great for reliability. But when fallback triggers silently, you get responses from a different (often weaker) model without knowing it.
+
+**Why it\u2019s silent:** The response still comes through. It just comes from Gemini Flash instead of Claude Opus. Quality drops, but there\u2019s no error message, no notification. You might notice the agent seems "off" without connecting it to a model switch.
+
+**How to detect:**
+- Sudden quality drops in agent output (less nuanced, more generic)
+- Faster response times than usual (smaller model responding quicker)
+- Check provider logs for fallback events
+- Look for rate limit warnings in your API dashboard - they often trigger the fallback
+
+**The fix:**
+- Configure your agent to log which model served each response
+- Set up alerts for when fallback triggers
+- If you\u2019re hitting rate limits on your primary, add delay between requests rather than silently falling back to a weaker model
+- Consider whether you actually need fallback, or if you\u2019d rather see an error and retry
+
+## 5. Memory Decay Over Long Sessions
+
+**What happens:** Over extended sessions (100+ messages), your agent gradually drifts from its original instructions. It starts hallucinating details, mixing up project specifics, and making increasingly confident but wrong assertions.
+
+**Why it\u2019s silent:** The drift is gradual. Message 50 is slightly less accurate than message 10. Message 150 might be working from a completely hallucinated context. There\u2019s no single point where it breaks.
+
+**How to detect:**
+- Ask your agent to repeat its core instructions after a long session - compare to the originals
+- Track task success rate over time - if accuracy drops after message 100, you\u2019re seeing drift
+- Watch for the agent inventing facts about your projects that you never told it
+
+**The fix:**
+- **Hard reset every 50 tasks** for mission-critical workflows. Start a fresh session with context loaded from files.
+- Keep workspace instruction files tight and concise - bloated AGENTS.md files compound the drift
+- Use the "write it down" pattern: anything important goes to a file, not just the conversation
+- Implement periodic self-checks: "Re-read MEMORY.md and verify your current task against it"
+
+## The 5-Layer Diagnostic
+
+When something feels wrong but you can\u2019t pinpoint it, work through these layers:
+
+1. **Config** - Is the YAML valid? Are paths correct? Is auth configured?
+2. **Network** - Can the gateway reach the provider? Are MCP tools connected?
+3. **Model** - Which model is actually responding? Is it the one you expect?
+4. **Memory** - Is the agent working from current information or stale context?
+5. **Behavior** - Is the agent following instructions or drifting?
+
+Most "mysterious" OpenClaw problems live in layers 3-5, not 1-2. People check their config ten times but never verify which model is responding.
+
+## The Takeaway
+
+OpenClaw doesn\u2019t crash when these things go wrong. It degrades. Slowly, silently, expensively. The difference between a well-maintained agent and a neglected one isn\u2019t visible in a single conversation. It shows up in your monthly API bill, in tasks that take twice as long as they should, and in an agent that feels a little dumber every week.
+
+Fix these five things and you\u2019ll have an agent that actually improves over time instead of decaying.
+
+## Resources
+
+- [Free Security Scan](https://getmilo.dev) - checks config issues that cause silent failures
+- [The OpenClaw Field Manual ($49)](https://buy.stripe.com/8x2bJ070hdH91hgfgOfIs03) - full debugging playbook, memory optimization, cost management. 74 pages of configs and fixes.
+- [AI Agent Audit ($199)](https://buy.stripe.com/00w3cu84l8mP5xwc4CfIs04) - we run the diagnostic for you. Full report on your agent\u2019s health.`
   }
 ];
 
