@@ -19,6 +19,7 @@ function ThankYouContent() {
 
   const isShield = product === "shield";
   const isGuide = product === "guide";
+  const isEssentials = product === "essentials";
 
   return (
     <main className="min-h-screen flex items-center justify-center px-6 noise-bg">
@@ -88,6 +89,47 @@ function ThankYouContent() {
               </code>
               <p className="text-xs text-gray-500 mt-2">
                 Then restart your gateway. The skill will run a full security audit automatically.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {isEssentials && (
+          <div className="rounded-2xl bg-gray-900/80 border border-emerald-500/30 p-8 mb-8 relative overflow-hidden">
+            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent" />
+            <div className="w-14 h-14 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mx-auto mb-4">
+              <Shield className="w-7 h-7 text-emerald-400" />
+            </div>
+            <h2 className="text-2xl font-bold mb-2">Milo Essentials</h2>
+            <p className="text-gray-400 text-sm mb-4">
+              Your premium skill bundle is ready. 5 skills included:
+            </p>
+            <ul className="text-left text-sm text-gray-300 space-y-2 mb-6">
+              <li className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-emerald-400 flex-shrink-0" /> Milo Shield — Security hardening</li>
+              <li className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-emerald-400 flex-shrink-0" /> Cost Guardian — Spending monitor</li>
+              <li className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-emerald-400 flex-shrink-0" /> Memory Doctor — Context optimizer</li>
+              <li className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-emerald-400 flex-shrink-0" /> Skill Auditor — Malware scanner</li>
+              <li className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-emerald-400 flex-shrink-0" /> Backup & Restore — Disaster recovery</li>
+            </ul>
+            <a
+              href="/downloads/milo-essentials.zip"
+              download
+              className="inline-flex items-center justify-center gap-2 w-full py-4 rounded-xl font-semibold text-lg bg-emerald-600 hover:bg-emerald-500 transition-colors"
+            >
+              <Download className="w-5 h-5" />
+              Download Milo Essentials (.zip)
+            </a>
+            <div className="mt-6 text-left rounded-xl bg-gray-950 border border-gray-800 p-4">
+              <div className="text-sm font-semibold text-gray-300 mb-2 flex items-center gap-2">
+                <Terminal className="w-4 h-4 text-emerald-400" />
+                Installation
+              </div>
+              <code className="text-sm text-emerald-400 font-mono block whitespace-pre-line">
+{`unzip milo-essentials.zip -d ~/.openclaw/skills/
+openclaw gateway restart`}
+              </code>
+              <p className="text-xs text-gray-500 mt-2">
+                All 5 skills will be available immediately after restart.
               </p>
             </div>
           </div>

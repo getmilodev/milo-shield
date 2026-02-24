@@ -711,16 +711,47 @@ channels:
               </a>
             </div>
 
-            {/* Roadmap */}
-            <div className="p-5 rounded-xl bg-gray-900/30 border border-gray-800/50 text-center">
-              <div className="text-sm text-gray-400 mb-2 flex items-center justify-center gap-1.5">
-                <Zap className="w-4 h-4 text-yellow-400" />
-                On the roadmap
+            {/* Milo Essentials — Featured Bundle */}
+            <div className="p-6 rounded-2xl bg-gradient-to-br from-emerald-950/50 to-gray-900/50 border border-emerald-500/30 relative overflow-hidden">
+              <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent" />
+              <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-3">
+                    <span className="text-xs px-2.5 py-1 bg-emerald-600/30 text-emerald-300 rounded-full font-bold border border-emerald-500/40 uppercase tracking-wider">New</span>
+                    <span className="text-xs px-2.5 py-1 bg-yellow-600/20 text-yellow-300 rounded-full font-semibold border border-yellow-500/30">Save $76 vs buying separately</span>
+                  </div>
+                  <h3 className="text-2xl font-bold text-white mb-2">Milo Essentials</h3>
+                  <p className="text-gray-300 text-sm mb-3">5 premium skills in one bundle — everything you need to run OpenClaw securely and efficiently.</p>
+                  <div className="flex flex-wrap gap-2 text-xs">
+                    <span className="px-2 py-1 bg-gray-800/60 text-gray-300 rounded-md border border-gray-700/50">🛡️ Security Hardening</span>
+                    <span className="px-2 py-1 bg-gray-800/60 text-gray-300 rounded-md border border-gray-700/50">💰 Cost Monitoring</span>
+                    <span className="px-2 py-1 bg-gray-800/60 text-gray-300 rounded-md border border-gray-700/50">🧠 Memory Optimization</span>
+                    <span className="px-2 py-1 bg-gray-800/60 text-gray-300 rounded-md border border-gray-700/50">🔍 Skill Auditing</span>
+                    <span className="px-2 py-1 bg-gray-800/60 text-gray-300 rounded-md border border-gray-700/50">💾 Backup & Restore</span>
+                  </div>
+                </div>
+                <div className="text-center md:text-right flex-shrink-0">
+                  <div className="text-4xl font-extrabold text-white mb-1">$49</div>
+                  <div className="text-sm text-gray-400 mb-4 line-through">$125 separately</div>
+                  <a
+                    href="https://buy.stripe.com/00w00i0Az287dZU40I9Ve0n"
+                    target="_blank"
+                    rel="noopener"
+                    className="inline-flex items-center gap-2 px-8 py-3 rounded-xl font-semibold bg-emerald-600 hover:bg-emerald-500 transition-colors text-white"
+                  >
+                    Get the Bundle
+                    <ChevronRight className="w-4 h-4" />
+                  </a>
+                </div>
               </div>
-              <p className="text-gray-500 text-sm">
-                <strong className="text-gray-400">Milo Watch</strong> — agent observability dashboard (March 2026) ·{" "}
-                <strong className="text-gray-400">Milo Essentials</strong> — premium skill bundle ($49)
-              </p>
+            </div>
+
+            {/* Roadmap */}
+            <div className="mt-6 p-4 rounded-xl bg-gray-900/30 border border-gray-800/50 text-center">
+              <div className="text-sm text-gray-400 flex items-center justify-center gap-1.5">
+                <Zap className="w-4 h-4 text-yellow-400" />
+                Coming soon: <strong className="text-gray-300 ml-1">Milo Watch</strong> — agent observability dashboard (March 2026)
+              </div>
             </div>
           </div>
         </section>
