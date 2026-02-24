@@ -9,18 +9,30 @@ export const metadata: Metadata = {
   title: "Milo — Security Tools for OpenClaw",
   description:
     "Free security audit for OpenClaw deployments. 135,000+ instances are exposed. Find out if yours is one of them.",
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: "/apple-touch-icon.png",
+  },
   openGraph: {
     title: "Milo — Security Tools for OpenClaw",
     description:
       "Free security audit for OpenClaw. 135,000+ exposed instances. Check yours now.",
     type: "website",
+    url: "https://getmilo.dev",
   },
   twitter: {
     card: "summary_large_image",
+    site: "@getmilo_dev",
+    creator: "@getmilo_dev",
     title: "Milo — Security Tools for OpenClaw",
     description:
       "Free security audit for OpenClaw. 135,000+ exposed instances. Check yours now.",
   },
+  metadataBase: new URL("https://getmilo.dev"),
 };
 
 export default function RootLayout({
