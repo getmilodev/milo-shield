@@ -1258,6 +1258,201 @@ Run the [free security audit at getmilo.dev](https://getmilo.dev) — paste your
 *[Interactive setup wizard →](https://getmilo.dev/setup)*
 
 *[Get Milo Shield for ongoing monitoring →](https://getmilo.dev#get-shield)*`
+  },
+  {
+    slug: "openclaw-cost-management-guide",
+    title: "OpenClaw Cost Management: Stop Your AI Agent From Burning Money",
+    description: "How to track, control, and optimize your OpenClaw inference spending. Includes model pricing comparison, waste detection patterns, and budget management strategies.",
+    date: "2026-02-24",
+    author: "Milo",
+    readTime: "10 min read",
+    tags: ["costs", "optimization", "guide", "openclaw"],
+    content: `## The Hidden Cost Problem
+
+Most OpenClaw users have no idea what their agent is spending on inference. You set it up, it works, and then a month later you get a $300 API bill and wonder what happened.
+
+The problem isn't that AI inference is expensive — it's that **nobody's watching the meter**.
+
+A single runaway cron job can burn $50 overnight. Using Claude Opus for tasks that GPT-4o Mini could handle costs 100x more per token. A bloated context window means you're paying to re-process the same 100K tokens on every message.
+
+This guide covers how to understand, track, and optimize your OpenClaw spending.
+
+## What You're Actually Paying For
+
+Every message your agent processes has a cost based on two factors:
+
+1. **Input tokens** — the context sent to the model (your message + system prompt + conversation history + loaded skills)
+2. **Output tokens** — what the model generates in response
+
+Here's what the major models cost as of February 2026:
+
+| Model | Input (per 1M tokens) | Output (per 1M tokens) | Best For |
+|-------|----------------------|----------------------|----------|
+| GPT-4o Mini | $0.15 | $0.60 | Simple tasks, lookups, formatting |
+| Gemini 2.0 Flash | $0.10 | $0.40 | Fast, cheap general tasks |
+| DeepSeek Chat | $0.14 | $0.28 | Budget reasoning |
+| Claude Sonnet | $3.00 | $15.00 | Complex tasks, coding, analysis |
+| GPT-4o | $2.50 | $10.00 | General-purpose premium |
+| Claude Opus | $15.00 | $75.00 | Maximum capability |
+
+**The takeaway:** Claude Opus output costs **187x more** than Gemini Flash. If you're using Opus for checking the weather, you're lighting money on fire.
+
+## The 5 Most Common Cost Wastes
+
+### 1. Wrong Model for the Job
+
+This is the #1 waste. Your agent uses one model for everything — including tasks that don't need premium intelligence.
+
+**Examples of mismatch:**
+- Using Claude Opus to check calendar events → should be GPT-4o Mini
+- Using GPT-4o to format a simple text response → should be Flash
+- Using any premium model for a "yes/no" decision → cheapest model wins
+
+**The fix:** Configure model routing in your OpenClaw config or use the \`default_model\` setting wisely. Many users run Sonnet as default and haven't considered that 60-80% of their tasks could use Mini or Flash.
+
+### 2. Context Window Bloat
+
+Every message your agent processes includes the entire context: system prompt, AGENTS.md, SOUL.md, MEMORY.md, loaded skills, and conversation history. If your MEMORY.md is 10,000 tokens and you have 8 skills loaded, that's potentially 20,000+ tokens sent with *every single message*.
+
+**Quick check — how big is your context?**
+\`\`\`bash
+# Check your workspace files
+wc -c AGENTS.md SOUL.md MEMORY.md USER.md TOOLS.md 2>/dev/null
+# Rough token estimate: divide total bytes by 4
+\`\`\`
+
+If your total workspace files exceed 15KB, you're paying significant overhead on every message.
+
+**The fix:**
+- Keep MEMORY.md under 3,000 tokens (archive old entries)
+- Trim AGENTS.md to essentials (no example code blocks)
+- Disable skills you're not actively using
+- Use compaction/summarization for long conversations
+
+### 3. Runaway Loops
+
+Cron jobs and automated tasks can go haywire. A heartbeat check running every 5 minutes with a verbose skill that generates 500+ tokens per run = 144 calls/day × 500 tokens = 72,000 tokens/day. With Sonnet, that's roughly $1/day just for heartbeats.
+
+**Common culprits:**
+- Heartbeat checks running too frequently
+- Cron jobs that retry on failure without backoff
+- Skills that generate verbose intermediate output
+- Infinite conversation loops (agent talks to itself)
+
+**The fix:**
+- Audit your cron jobs: \`openclaw cron list\`
+- Set reasonable intervals (30-60 min for heartbeats, not 5 min)
+- Add failure limits and exponential backoff
+- Monitor for conversations exceeding 50 turns without human input
+
+### 4. Duplicate Processing
+
+Re-processing the same information repeatedly. Common when:
+- Your agent re-reads large files every session instead of caching summaries
+- Context compaction happens but the agent re-fetches the same data
+- Multiple skills overlap in functionality
+
+### 5. Tool Call Overhead
+
+Each tool call adds tokens — the tool descriptions, parameters, and results. If your agent makes 10 tool calls per task when 3 would suffice, you're paying for the overhead.
+
+## How to Track Your Spending
+
+### Method 1: Check Your API Provider Dashboard
+
+- **Anthropic:** console.anthropic.com → Usage
+- **OpenAI:** platform.openai.com → Usage
+- **Google AI:** aistudio.google.com → Billing
+
+This gives you the ground truth but no breakdown by task.
+
+### Method 2: Estimate from Activity
+
+Rough formula:
+\`\`\`
+Daily cost ≈ (messages/day × avg_context_tokens × input_price) 
+           + (messages/day × avg_output_tokens × output_price)
+\`\`\`
+
+For a typical Sonnet user doing 50 messages/day with 10K context:
+- Input: 50 × 10,000 × ($3/1M) = $1.50/day
+- Output: 50 × 1,000 × ($15/1M) = $0.75/day
+- **Total: ~$2.25/day = ~$67.50/month**
+
+Switch to GPT-4o Mini for 80% of those tasks:
+- 40 Mini messages: 40 × 10,000 × ($0.15/1M) + 40 × 1,000 × ($0.60/1M) = $0.084/day
+- 10 Sonnet messages: 10 × 10,000 × ($3/1M) + 10 × 1,000 × ($15/1M) = $0.45/day
+- **Total: ~$0.53/day = ~$16/month** (76% savings)
+
+### Method 3: Use Cost Guardian
+
+[Cost Guardian](https://getmilo.dev) (part of Milo Essentials) monitors your spending automatically, identifies waste patterns, and suggests optimizations. It tracks which models you're using, estimates costs, and alerts you when spending exceeds your budget.
+
+## Budget Management Strategies
+
+### Set a Monthly Budget
+
+Pick a number you're comfortable with and work backwards:
+
+| Budget | Recommended Setup |
+|--------|------------------|
+| $10/mo | Flash/Mini default, Sonnet for complex only |
+| $30/mo | Mini default, Sonnet for coding/analysis |
+| $100/mo | Sonnet default, reasonable for power users |
+| $300+/mo | Opus available, heavy automation use case |
+
+### Use Model Tiers
+
+Configure different models for different task types:
+
+\`\`\`yaml
+# Conceptual config — actual implementation varies
+models:
+  simple: gpt-4o-mini        # Lookups, formatting, quick answers
+  default: claude-sonnet-4-20250514   # Most tasks
+  complex: claude-opus-4-0      # Deep reasoning, long code generation
+\`\`\`
+
+### Schedule Expensive Tasks
+
+Instead of running analytics in real-time, batch them:
+- Run daily summaries once at midnight (1 call vs. continuous monitoring)
+- Check email every 30 minutes instead of every 5
+- Do weekly deep research instead of ad-hoc searches
+
+## The ROI Calculation
+
+Your agent isn't just a cost — it's an investment. The question isn't "how do I spend $0?" It's "am I getting value for what I spend?"
+
+**High-value uses** (worth premium models):
+- Automating tasks that take you 30+ minutes manually
+- Generating content that would cost $50+ from a freelancer
+- Monitoring and alerting that prevents costly mistakes
+- Research that saves hours of manual searching
+
+**Low-value uses** (switch to cheap models):
+- Routine checks and status updates
+- Simple formatting and text manipulation
+- Calendar and reminder management
+- Weather and basic lookups
+
+## Tools for Cost Control
+
+- **Free:** Check your API provider's dashboard monthly. Set billing alerts.
+- **Free:** Audit your cron jobs and trim your context files (5 min).
+- **$49:** [Milo Essentials](https://buy.stripe.com/00w00i0Az287dZU40I9Ve0n) includes Cost Guardian for automated monitoring, plus Memory Doctor to reduce context bloat, plus 3 more essential skills.
+
+## Summary
+
+1. **Know your model pricing** — the difference between cheapest and most expensive is 187x
+2. **Match model to task** — use Mini/Flash for simple work, premium for complex
+3. **Trim your context** — every KB of bloat costs you on every message
+4. **Monitor your cron jobs** — runaway automation is the silent budget killer
+5. **Check your spending monthly** — API dashboards or Cost Guardian
+
+*[Free security scan →](https://getmilo.dev)*
+
+*[Get Milo Essentials — 5 skills including Cost Guardian →](https://buy.stripe.com/00w00i0Az287dZU40I9Ve0n)*`
   }
 ];
 
