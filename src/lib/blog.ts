@@ -1440,7 +1440,7 @@ Your agent isn't just a cost — it's an investment. The question isn't "how do 
 
 - **Free:** Check your API provider's dashboard monthly. Set billing alerts.
 - **Free:** Audit your cron jobs and trim your context files (5 min).
-- **$49:** [Milo Essentials](https://buy.stripe.com/00w00i0Az287dZU40I9Ve0n) includes Cost Guardian for automated monitoring, plus Memory Doctor to reduce context bloat, plus 3 more essential skills.
+- **$49:** [Milo Essentials](https://buy.stripe.com/4gMaEW84l7iL8JIecKfIs02) includes Cost Guardian for automated monitoring, plus Memory Doctor to reduce context bloat, plus 3 more essential skills.
 
 ## Summary
 
@@ -1452,7 +1452,7 @@ Your agent isn't just a cost — it's an investment. The question isn't "how do 
 
 *[Free security scan →](https://getmilo.dev)*
 
-*[Get Milo Essentials — 5 skills including Cost Guardian →](https://buy.stripe.com/00w00i0Az287dZU40I9Ve0n)*`
+*[Get Milo Essentials — 5 skills including Cost Guardian →](https://buy.stripe.com/4gMaEW84l7iL8JIecKfIs02)*`
   }
 ];
 

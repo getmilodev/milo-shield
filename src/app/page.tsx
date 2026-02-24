@@ -268,7 +268,7 @@ function Nav() {
           <a href="/setup" className="text-sm text-gray-400 hover:text-gray-100 transition-colors">Setup</a>
           <a href="/blog" className="text-sm text-gray-400 hover:text-gray-100 transition-colors">Blog</a>
           <a
-            href="https://buy.stripe.com/8x2eVc1EDbIH9JE9l29Ve0m"
+            href="https://buy.stripe.com/3cI4gy4S946z5xwfgOfIs01"
             target="_blank"
             rel="noopener"
             className="text-sm text-gray-400 hover:text-gray-100 transition-colors"
@@ -525,7 +525,7 @@ channels:
                         network exposure, and generates a fix-it-for-me script.
                       </p>
                       <a
-                        href="https://buy.stripe.com/8x2aEWfvt3cb4pk2WE9Ve0l"
+                        href="https://buy.stripe.com/6oUdR870h1YraRQ1pYfIs00"
                         target="_blank"
                         rel="noopener"
                         className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold bg-emerald-600 hover:bg-emerald-500 transition-colors"
@@ -632,7 +632,7 @@ channels:
                 ))}
               </ul>
               <a
-                href="https://buy.stripe.com/8x2aEWfvt3cb4pk2WE9Ve0l"
+                href="https://buy.stripe.com/6oUdR870h1YraRQ1pYfIs00"
                 target="_blank"
                 rel="noopener"
                 className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl font-semibold bg-emerald-600 hover:bg-emerald-500 transition-colors text-lg"
@@ -673,7 +673,7 @@ channels:
               </a>
 
               <a
-                href="https://buy.stripe.com/8x2aEWfvt3cb4pk2WE9Ve0l"
+                href="https://buy.stripe.com/6oUdR870h1YraRQ1pYfIs00"
                 target="_blank"
                 rel="noopener"
                 className="p-6 rounded-xl bg-emerald-900/15 border border-emerald-700/40 hover:border-emerald-500/60 transition-all group"
@@ -692,7 +692,7 @@ channels:
               </a>
 
               <a
-                href="https://buy.stripe.com/8x2eVc1EDbIH9JE9l29Ve0m"
+                href="https://buy.stripe.com/3cI4gy4S946z5xwfgOfIs01"
                 target="_blank"
                 rel="noopener"
                 className="p-6 rounded-xl bg-emerald-900/15 border border-emerald-700/40 hover:border-emerald-500/60 transition-all group"
@@ -734,7 +734,7 @@ channels:
                   <div className="text-4xl font-extrabold text-white mb-1">$49</div>
                   <div className="text-sm text-gray-400 mb-4 line-through">$125 separately</div>
                   <a
-                    href="https://buy.stripe.com/00w00i0Az287dZU40I9Ve0n"
+                    href="https://buy.stripe.com/4gMaEW84l7iL8JIecKfIs02"
                     target="_blank"
                     rel="noopener"
                     className="inline-flex items-center gap-2 px-8 py-3 rounded-xl font-semibold bg-emerald-600 hover:bg-emerald-500 transition-colors text-white"

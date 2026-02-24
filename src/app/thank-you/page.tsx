@@ -143,7 +143,7 @@ openclaw gateway restart`}
                 <strong className="text-gray-200">Want automated security?</strong> Milo Shield scans your installed skills for malware, checks network exposure, and generates fix scripts.
               </p>
               <a
-                href="https://buy.stripe.com/8x2aEWfvt3cb4pk2WE9Ve0l"
+                href="https://buy.stripe.com/6oUdR870h1YraRQ1pYfIs00"
                 target="_blank"
                 rel="noopener"
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-emerald-600/20 border border-emerald-500/30 text-emerald-400 text-sm font-semibold hover:bg-emerald-600/30 transition-colors"
@@ -160,7 +160,7 @@ openclaw gateway restart`}
                 <strong className="text-gray-200">Need the full setup guide?</strong> 40+ pages covering everything from first install to advanced config.
               </p>
               <a
-                href="https://buy.stripe.com/8x2eVc1EDbIH9JE9l29Ve0m"
+                href="https://buy.stripe.com/3cI4gy4S946z5xwfgOfIs01"
                 target="_blank"
                 rel="noopener"
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-emerald-600/20 border border-emerald-500/30 text-emerald-400 text-sm font-semibold hover:bg-emerald-600/30 transition-colors"
