@@ -2,43 +2,20 @@ import { NextRequest, NextResponse } from "next/server";
 
 /* 
   Email capture endpoint.
-  Stores leads to a local JSON file (good enough for now — upgrade to a DB when volume demands it).
+  Stores leads by sending them to a Milo webhook endpoint on the home server.
+  Falls back to Stripe customer creation if webhook fails.
+  
   Used for:
   - Pre-checkout email capture (abandoned cart recovery)
   - Newsletter subscribers
   - General lead tracking
 */
 
-import { promises as fs } from "fs";
-import path from "path";
+// Webhook URL on the home server to store leads
+const WEBHOOK_URL = process.env.LEADS_WEBHOOK_URL || "";
+// Milo's Stripe key for creating customers as backup
+const STRIPE_KEY = process.env.STRIPE_KEY_MILO || "";
 
-const LEADS_FILE = path.join(process.cwd(), "data", "leads.json");
-
-interface Lead {
-  email: string;
-  source: string; // "checkout-shield", "checkout-guide", "checkout-essentials", "newsletter", etc.
-  product?: string;
-  timestamp: string;
-  converted: boolean;
-  followUpSent: boolean;
-  ip?: string;
-}
-
-async function getLeads(): Promise<Lead[]> {
-  try {
-    const data = await fs.readFile(LEADS_FILE, "utf-8");
-    return JSON.parse(data);
-  } catch {
-    return [];
-  }
-}
-
-async function saveLeads(leads: Lead[]): Promise<void> {
-  await fs.mkdir(path.dirname(LEADS_FILE), { recursive: true });
-  await fs.writeFile(LEADS_FILE, JSON.stringify(leads, null, 2));
-}
-
-// Simple email validation
 function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && email.length <= 254;
 }
@@ -58,6 +35,42 @@ function checkRateLimit(ip: string): boolean {
   return true;
 }
 
+async function storeViaStripe(email: string, product: string, source: string): Promise<boolean> {
+  if (!STRIPE_KEY) return false;
+  try {
+    const res = await fetch("https://api.stripe.com/v1/customers", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${STRIPE_KEY}`,
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: new URLSearchParams({
+        email,
+        "metadata[source]": source,
+        "metadata[product]": product,
+        "metadata[type]": "lead",
+      }),
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+async function storeViaWebhook(email: string, product: string, source: string, ip: string): Promise<boolean> {
+  if (!WEBHOOK_URL) return false;
+  try {
+    const res = await fetch(WEBHOOK_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, product, source, ip, timestamp: new Date().toISOString() }),
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
 export async function POST(req: NextRequest) {
   const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
 
@@ -74,48 +87,22 @@ export async function POST(req: NextRequest) {
 
   const email = body.email?.trim().toLowerCase();
   const source = body.source || "unknown";
-  const product = body.product;
+  const product = body.product || "unknown";
 
   if (!email || !isValidEmail(email)) {
     return NextResponse.json({ error: "Valid email required." }, { status: 400 });
   }
 
-  const leads = await getLeads();
-
-  // Check for duplicate — update source if different
-  const existing = leads.find((l) => l.email === email);
-  if (existing) {
-    // Update with latest interest
-    if (product && existing.product !== product) {
-      existing.product = product;
-      existing.source = source;
-      existing.timestamp = new Date().toISOString();
-    }
-    await saveLeads(leads);
-    return NextResponse.json({ ok: true, message: "Updated." });
+  // Try webhook first, fall back to Stripe customer creation
+  const webhookOk = await storeViaWebhook(email, product, source, ip);
+  if (!webhookOk) {
+    await storeViaStripe(email, product, source);
   }
 
-  // New lead
-  leads.push({
-    email,
-    source,
-    product,
-    timestamp: new Date().toISOString(),
-    converted: false,
-    followUpSent: false,
-    ip,
-  });
-
-  await saveLeads(leads);
-
+  // Always return success to the user — don't block checkout over storage failures
   return NextResponse.json({ ok: true, message: "Saved." });
 }
 
-// GET — return lead count (public stat, no PII)
 export async function GET() {
-  const leads = await getLeads();
-  return NextResponse.json({
-    total: leads.length,
-    converted: leads.filter((l) => l.converted).length,
-  });
+  return NextResponse.json({ status: "ok" });
 }
