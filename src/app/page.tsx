@@ -476,13 +476,15 @@ channels:
             ))}
           </ul>
           <a
-            href="#"
+            href="https://buy.stripe.com/3cIcN4ab9aEDdZUeFm9Ve0j"
+            target="_blank"
+            rel="noopener"
             className="block w-full py-3 rounded-xl font-semibold bg-emerald-600 hover:bg-emerald-500 transition-colors"
           >
-            Get Milo Shield
+            Buy Milo Shield — $29
           </a>
           <p className="text-xs text-gray-600 mt-3">
-            Also available on ClawMart
+            Secure checkout via Stripe. Instant download after purchase.
           </p>
         </div>
       </section>
@@ -501,14 +503,14 @@ channels:
             <p className="text-gray-400 text-xs">Interactive step-by-step guide. Get running safely in 15 min.</p>
             <p className="text-emerald-400 text-xs mt-2 font-semibold">Free →</p>
           </a>
-          <div className="p-5 rounded-xl bg-gray-900/30 border border-gray-800/50">
+          <a href="https://buy.stripe.com/eVqfZg5UT2878FA8gY9Ve0k" target="_blank" rel="noopener" className="p-5 rounded-xl bg-gray-900/30 border border-gray-800/50 hover:border-gray-600 transition-colors block">
             <div className="text-xl mb-2">📘</div>
             <h3 className="font-semibold mb-1">Survival Guide</h3>
             <p className="text-gray-400 text-xs">
               The complete OpenClaw guide — setup, security, troubleshooting. 40+ pages.
             </p>
-            <p className="text-yellow-400 text-xs mt-2 font-semibold">Coming soon — $19</p>
-          </div>
+            <p className="text-emerald-400 text-xs mt-2 font-semibold">$19 →</p>
+          </a>
           <div className="p-5 rounded-xl bg-gray-900/30 border border-gray-800/50">
             <div className="text-xl mb-2">📊</div>
             <h3 className="font-semibold mb-1">Milo Watch</h3>
