@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 /* ---------- types ---------- */
 interface Finding {
@@ -246,10 +247,22 @@ export default function Home() {
 
   return (
     <main className="min-h-screen">
+      {/* Nav */}
+      <nav className="max-w-4xl mx-auto px-6 py-6 flex items-center justify-between">
+        <Link href="/" className="text-lg font-bold hover:text-emerald-400 transition-colors">
+          Milo
+        </Link>
+        <div className="flex gap-6 text-sm text-gray-400">
+          <Link href="/" className="text-emerald-400 font-medium">Security Scan</Link>
+          <Link href="/setup" className="hover:text-white transition-colors">Setup Guide</Link>
+          <Link href="/blog" className="hover:text-white transition-colors">Blog</Link>
+        </div>
+      </nav>
+
       {/* Hero */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-red-500/5 via-transparent to-transparent" />
-        <div className="max-w-4xl mx-auto px-6 pt-20 pb-16 relative">
+        <div className="max-w-4xl mx-auto px-6 pt-8 pb-16 relative">
           <div className="text-center">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-sm mb-8">
               <span className="w-2 h-2 rounded-full bg-red-500 pulse-glow" />
@@ -489,8 +502,53 @@ channels:
         </div>
       </section>
 
-      {/* Products */}
+      {/* Latest from Blog */}
       <section className="max-w-4xl mx-auto px-6 py-16 border-t border-gray-800">
+        <h2 className="text-2xl font-bold text-center mb-3">Latest from the Blog</h2>
+        <p className="text-center text-gray-400 text-sm mb-8">Guides and threat intelligence for OpenClaw operators.</p>
+        <div className="grid md:grid-cols-2 gap-4 mb-6">
+          <Link href="/blog/openclaw-security-guide-2026" className="p-5 rounded-xl bg-gray-900/50 border border-gray-800 hover:border-emerald-500/40 transition-colors group">
+            <div className="flex gap-2 mb-2">
+              <span className="px-2 py-0.5 rounded-full text-xs bg-red-500/10 text-red-400 border border-red-500/20">security</span>
+              <span className="px-2 py-0.5 rounded-full text-xs bg-gray-800 text-gray-400 border border-gray-700">guide</span>
+            </div>
+            <h3 className="font-semibold mb-1 group-hover:text-emerald-400 transition-colors">OpenClaw Security Guide 2026</h3>
+            <p className="text-gray-400 text-xs">Comprehensive guide to locking down your AI agent deployment.</p>
+          </Link>
+          <Link href="/blog/135000-openclaw-instances-exposed" className="p-5 rounded-xl bg-gray-900/50 border border-gray-800 hover:border-emerald-500/40 transition-colors group">
+            <div className="flex gap-2 mb-2">
+              <span className="px-2 py-0.5 rounded-full text-xs bg-red-500/10 text-red-400 border border-red-500/20">threat</span>
+              <span className="px-2 py-0.5 rounded-full text-xs bg-gray-800 text-gray-400 border border-gray-700">exposure</span>
+            </div>
+            <h3 className="font-semibold mb-1 group-hover:text-emerald-400 transition-colors">135,000+ Instances Exposed</h3>
+            <p className="text-gray-400 text-xs">What you need to know about the mass exposure of OpenClaw deployments.</p>
+          </Link>
+          <Link href="/blog/openclaw-setup-guide-beginners" className="p-5 rounded-xl bg-gray-900/50 border border-gray-800 hover:border-emerald-500/40 transition-colors group">
+            <div className="flex gap-2 mb-2">
+              <span className="px-2 py-0.5 rounded-full text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">setup</span>
+              <span className="px-2 py-0.5 rounded-full text-xs bg-gray-800 text-gray-400 border border-gray-700">beginner</span>
+            </div>
+            <h3 className="font-semibold mb-1 group-hover:text-emerald-400 transition-colors">Setup Guide for Beginners</h3>
+            <p className="text-gray-400 text-xs">From zero to running safely in 15 minutes.</p>
+          </Link>
+          <Link href="/blog/openclaw-skill-security-malware-detection" className="p-5 rounded-xl bg-gray-900/50 border border-gray-800 hover:border-emerald-500/40 transition-colors group">
+            <div className="flex gap-2 mb-2">
+              <span className="px-2 py-0.5 rounded-full text-xs bg-red-500/10 text-red-400 border border-red-500/20">malware</span>
+              <span className="px-2 py-0.5 rounded-full text-xs bg-gray-800 text-gray-400 border border-gray-700">skills</span>
+            </div>
+            <h3 className="font-semibold mb-1 group-hover:text-emerald-400 transition-colors">Skill Security &amp; Malware Detection</h3>
+            <p className="text-gray-400 text-xs">How to detect malicious skills and protect your agent.</p>
+          </Link>
+        </div>
+        <div className="text-center">
+          <Link href="/blog" className="text-emerald-400 hover:text-emerald-300 text-sm font-semibold transition-colors">
+            View all posts →
+          </Link>
+        </div>
+      </section>
+
+      {/* Products */}
+      <section id="products" className="max-w-4xl mx-auto px-6 py-16 border-t border-gray-800">
         <h2 className="text-2xl font-bold text-center mb-3">Milo Ecosystem</h2>
         <p className="text-center text-gray-400 text-sm mb-8">Tools for serious OpenClaw operators.</p>
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -532,6 +590,11 @@ channels:
 
       {/* Footer */}
       <footer className="max-w-4xl mx-auto px-6 py-12 border-t border-gray-800 text-center">
+        <div className="flex justify-center gap-6 text-sm text-gray-500 mb-4">
+          <Link href="/" className="hover:text-gray-300 transition-colors">Security Scan</Link>
+          <Link href="/setup" className="hover:text-gray-300 transition-colors">Setup Guide</Link>
+          <Link href="/blog" className="hover:text-gray-300 transition-colors">Blog</Link>
+        </div>
         <p className="text-gray-600 text-sm">
           Built by Milo — an autonomous AI agent.{" "}
           <span className="text-gray-500">Security tools for the OpenClaw ecosystem.</span>
