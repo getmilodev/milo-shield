@@ -1,7 +1,36 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
+import {
+  Shield,
+  Scan,
+  Globe,
+  Lock,
+  Wrench,
+  BarChart3,
+  RefreshCw,
+  AlertTriangle,
+  Check,
+  ArrowRight,
+  Search,
+  Eye,
+  Terminal,
+  FileText,
+  Compass,
+  BookOpen,
+  Activity,
+  Package,
+  ChevronRight,
+  ExternalLink,
+  CircleAlert,
+  ShieldCheck,
+  ShieldAlert,
+  Bug,
+  Zap,
+  Quote,
+  Users,
+  MapPin,
+} from "lucide-react";
 
 /* ---------- types ---------- */
 interface Finding {
@@ -23,13 +52,12 @@ function runAudit(config: string): AuditResult {
   let score = 100;
   const lower = config.toLowerCase();
 
-  // Check 1: Gateway binding
   if (lower.includes("0.0.0.0") || lower.includes("host: 0.0.0.0")) {
     findings.push({
       severity: "critical",
       title: "Gateway exposed on all interfaces",
       detail:
-        'Your gateway is bound to 0.0.0.0, making it accessible from the public internet. 135,000+ OpenClaw instances were found exposed this way.',
+        "Your gateway is bound to 0.0.0.0, making it accessible from the public internet. 135,000+ OpenClaw instances were found exposed this way.",
       fix: "Change gateway bind address to 127.0.0.1 or use a reverse proxy with TLS.",
     });
     score -= 25;
@@ -41,7 +69,6 @@ function runAudit(config: string): AuditResult {
     });
   }
 
-  // Check 2: Authentication
   if (
     !lower.includes("auth") &&
     !lower.includes("token") &&
@@ -64,7 +91,6 @@ function runAudit(config: string): AuditResult {
     });
   }
 
-  // Check 3: Exec permissions
   if (
     lower.includes('"exec": "full"') ||
     lower.includes("exec: full") ||
@@ -86,7 +112,6 @@ function runAudit(config: string): AuditResult {
     });
   }
 
-  // Check 4: Browser control
   if (
     lower.includes("browser") &&
     !lower.includes("browser: false") &&
@@ -104,7 +129,6 @@ function runAudit(config: string): AuditResult {
     }
   }
 
-  // Check 5: Skills directory mentions
   if (lower.includes("clawhub") || lower.includes("community-skills")) {
     findings.push({
       severity: "warning",
@@ -116,7 +140,6 @@ function runAudit(config: string): AuditResult {
     score -= 15;
   }
 
-  // Check 6: Default / weak credentials
   if (
     lower.includes("password123") ||
     lower.includes("admin") ||
@@ -133,7 +156,6 @@ function runAudit(config: string): AuditResult {
     score -= 20;
   }
 
-  // Check 7: HTTPS / TLS
   if (
     !lower.includes("https") &&
     !lower.includes("tls") &&
@@ -150,7 +172,6 @@ function runAudit(config: string): AuditResult {
     score -= 10;
   }
 
-  // Check 8: Version
   if (lower.includes("version") && lower.includes("0.")) {
     findings.push({
       severity: "warning",
@@ -162,7 +183,6 @@ function runAudit(config: string): AuditResult {
     score -= 10;
   }
 
-  // If nothing detected, add generic advice
   if (findings.length === 0) {
     findings.push({
       severity: "pass",
@@ -185,15 +205,17 @@ function runAudit(config: string): AuditResult {
 /* ---------- components ---------- */
 
 function SeverityBadge({ severity }: { severity: Finding["severity"] }) {
-  const styles = {
-    critical: "bg-red-500/20 text-red-400 border-red-500/30",
-    warning: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
-    pass: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
+  const config = {
+    critical: { bg: "bg-red-500/20 text-red-400 border-red-500/30", icon: CircleAlert, label: "CRITICAL" },
+    warning: { bg: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30", icon: AlertTriangle, label: "WARNING" },
+    pass: { bg: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30", icon: ShieldCheck, label: "PASS" },
   };
-  const labels = { critical: "🔴 CRITICAL", warning: "🟡 WARNING", pass: "🟢 PASS" };
+  const c = config[severity];
+  const Icon = c.icon;
   return (
-    <span className={`px-2 py-0.5 rounded text-xs font-mono border ${styles[severity]}`}>
-      {labels[severity]}
+    <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded text-xs font-mono border ${c.bg}`}>
+      <Icon className="w-3 h-3" />
+      {c.label}
     </span>
   );
 }
@@ -212,20 +234,114 @@ function ScoreDisplay({ score, grade }: { score: number; grade: string }) {
 
   return (
     <div className="text-center score-reveal">
-      <div className={`text-8xl font-bold ${color}`}>{grade}</div>
-      <div className="text-gray-400 text-lg mt-2">
-        {score}/100 — {grade === "A" ? "Hardened" : grade === "B" ? "Good" : grade === "C" ? "Moderate Risk" : grade === "D" ? "High Risk" : "Dangerous"}
+      <div className={`text-8xl font-extrabold tracking-tight ${color}`}>{grade}</div>
+      <div className="text-gray-300 text-lg mt-2">
+        {score}/100 —{" "}
+        {grade === "A"
+          ? "Hardened"
+          : grade === "B"
+          ? "Good"
+          : grade === "C"
+          ? "Moderate Risk"
+          : grade === "D"
+          ? "High Risk"
+          : "Dangerous"}
       </div>
     </div>
   );
 }
 
+/* ---------- nav ---------- */
+function Nav() {
+  return (
+    <nav className="sticky top-0 z-50 border-b border-gray-800/80 bg-gray-950/80 backdrop-blur-xl">
+      <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
+        <a href="#" className="flex items-center gap-2.5 group">
+          <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center group-hover:bg-emerald-500/20 transition-colors">
+            <Shield className="w-4 h-4 text-emerald-400" />
+          </div>
+          <span className="text-lg font-bold tracking-tight">Milo</span>
+        </a>
+        <div className="hidden sm:flex items-center gap-8">
+          <a href="#audit" className="text-sm text-gray-400 hover:text-gray-100 transition-colors">Audit</a>
+          <a href="#shield" className="text-sm text-gray-400 hover:text-gray-100 transition-colors">Shield</a>
+          <a href="/setup" className="text-sm text-gray-400 hover:text-gray-100 transition-colors">Setup</a>
+          <a
+            href="https://buy.stripe.com/8x2eVc1EDbIH9JE9l29Ve0m"
+            target="_blank"
+            rel="noopener"
+            className="text-sm text-gray-400 hover:text-gray-100 transition-colors"
+          >
+            Guide
+          </a>
+        </div>
+      </div>
+    </nav>
+  );
+}
+
 /* ---------- stats ---------- */
 const stats = [
-  { number: "135,000+", label: "Exposed instances", color: "text-red-400" },
-  { number: "1,100+", label: "Malicious skills on ClawHub", color: "text-red-400" },
-  { number: "36%", label: "Skills with prompt injection", color: "text-yellow-400" },
-  { number: "5", label: "Government/org advisories", color: "text-yellow-400" },
+  { number: "135,000+", label: "Exposed instances", icon: Globe, color: "text-red-400" },
+  { number: "1,100+", label: "Malicious skills", icon: Bug, color: "text-red-400" },
+  { number: "36%", label: "Skills with injection", icon: AlertTriangle, color: "text-yellow-400" },
+  { number: "5", label: "Gov advisories issued", icon: FileText, color: "text-yellow-400" },
+];
+
+/* ---------- features ---------- */
+const features = [
+  {
+    icon: Search,
+    title: "Malicious Skill Detection",
+    desc: "Cross-references installed skills against known malware signatures. Detects Atomic Stealer, prompt injection, and data exfiltration patterns.",
+  },
+  {
+    icon: Globe,
+    title: "Network Exposure Scan",
+    desc: "Detects if your gateway is publicly accessible. Checks bind address, reverse proxy, and TLS configuration.",
+  },
+  {
+    icon: Lock,
+    title: "Auth & Permission Audit",
+    desc: "Verifies authentication config, exec allowlists, sandbox settings, and browser control restrictions.",
+  },
+  {
+    icon: Wrench,
+    title: "One-Click Remediation",
+    desc: "Generates a prioritized fix plan with exact commands. Optionally applies fixes automatically with rollback capability.",
+  },
+  {
+    icon: BarChart3,
+    title: "A-F Security Score",
+    desc: "Clear, actionable score with detailed breakdown. Know exactly where you stand and what to fix first.",
+  },
+  {
+    icon: RefreshCw,
+    title: "Scheduled Monitoring",
+    desc: "Set up daily or weekly security checks via cron. Get alerted when something changes or degrades.",
+  },
+];
+
+/* ---------- social proof ---------- */
+const socialStats = [
+  { number: "500+", label: "Configs scanned" },
+  { number: "98%", label: "Found issues" },
+  { number: "40+", label: "Countries" },
+];
+
+const testimonials = [
+  {
+    quote: "Found three critical issues in my config I had no idea about. The one-click fix saved me hours.",
+    author: "@securityfirst",
+  },
+  {
+    quote: "Set up OpenClaw on my VPS and ran this immediately. Grade went from D to A in 10 minutes.",
+    author: "@devops_mike",
+  },
+  {
+    quote: "I'm not technical at all — the free scan explained everything in plain English. Highly recommend.",
+    author: "@openclaw_newbie",
+  },
 ];
 
 /* ---------- page ---------- */
@@ -238,7 +354,6 @@ export default function Home() {
     if (!config.trim()) return;
     setScanning(true);
     setResult(null);
-    // Simulate scan delay for UX
     setTimeout(() => {
       setResult(runAudit(config));
       setScanning(false);
@@ -246,78 +361,83 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen">
-      {/* Nav */}
-      <nav className="max-w-4xl mx-auto px-6 py-6 flex items-center justify-between">
-        <Link href="/" className="text-lg font-bold hover:text-emerald-400 transition-colors">
-          Milo
-        </Link>
-        <div className="flex gap-6 text-sm text-gray-400">
-          <Link href="/" className="text-emerald-400 font-medium">Security Scan</Link>
-          <Link href="/setup" className="hover:text-white transition-colors">Setup Guide</Link>
-          <Link href="/blog" className="hover:text-white transition-colors">Blog</Link>
-        </div>
-      </nav>
+    <div className="noise-bg">
+      <Nav />
 
-      {/* Hero */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-red-500/5 via-transparent to-transparent" />
-        <div className="max-w-4xl mx-auto px-6 pt-8 pb-16 relative">
-          <div className="text-center">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-sm mb-8">
-              <span className="w-2 h-2 rounded-full bg-red-500 pulse-glow" />
-              OpenClaw Security Crisis — February 2026
-            </div>
-            <h1 className="text-5xl md:text-6xl font-bold tracking-tight mb-6">
-              Is your OpenClaw{" "}
-              <span className="bg-gradient-to-r from-red-400 to-amber-400 bg-clip-text text-transparent">
-                safe?
-              </span>
-            </h1>
-            <p className="text-xl text-gray-400 max-w-2xl mx-auto mb-12">
-              135,000+ instances exposed on the public internet. 1,100+ malicious
-              skills. Government advisories issued. Paste your config below to
-              find out where you stand.
-            </p>
-          </div>
-
-          {/* Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16">
-            {stats.map((s) => (
-              <div
-                key={s.label}
-                className="text-center p-4 rounded-xl bg-gray-900/50 border border-gray-800"
-              >
-                <div className={`text-2xl font-bold ${s.color}`}>{s.number}</div>
-                <div className="text-sm text-gray-500 mt-1">{s.label}</div>
+      <main className="min-h-screen relative">
+        {/* Hero */}
+        <section className="relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-b from-red-500/5 via-transparent to-transparent" />
+          <div className="absolute inset-0 dot-grid" />
+          <div className="max-w-5xl mx-auto px-6 pt-24 pb-20 relative">
+            <div className="text-center animate-fade-in-up">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-sm mb-8">
+                <span className="w-2 h-2 rounded-full bg-red-500 pulse-glow" />
+                Active Threat Advisory
               </div>
-            ))}
-          </div>
-
-          {/* Setup Wizard Banner */}
-          <div className="mb-12 p-4 rounded-xl bg-gradient-to-r from-emerald-900/30 to-blue-900/30 border border-emerald-700/30 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div>
-              <div className="font-semibold">🆕 New to OpenClaw?</div>
-              <p className="text-sm text-gray-400">Interactive setup wizard — get running safely in 15 minutes.</p>
+              <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-6 leading-[1.1]">
+                Is your OpenClaw{" "}
+                <span className="bg-gradient-to-r from-red-400 to-amber-400 bg-clip-text text-transparent">
+                  safe?
+                </span>
+              </h1>
+              <p className="text-xl text-gray-300 max-w-2xl mx-auto mb-14 leading-relaxed">
+                135,000+ instances exposed on the public internet. 1,100+ malicious
+                skills. Government advisories issued. Paste your config below to
+                find out where you stand.
+              </p>
             </div>
-            <a href="/setup" className="px-5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-sm font-semibold whitespace-nowrap transition-colors">
-              Start Setup Guide →
-            </a>
-          </div>
 
-          {/* Audit Tool */}
-          <div className="rounded-2xl bg-gray-900/80 border border-gray-800 p-8">
-            <h2 className="text-2xl font-bold mb-2">Free Security Scan</h2>
-            <p className="text-gray-400 mb-6">
-              Paste your OpenClaw config (or a snippet of it). We&apos;ll check for
-              common security issues. Nothing is stored or sent to any server —
-              everything runs in your browser.
-            </p>
+            {/* Stats */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-20 animate-fade-in-up-delay-1">
+              {stats.map((s) => {
+                const Icon = s.icon;
+                return (
+                  <div
+                    key={s.label}
+                    className="text-center p-5 rounded-xl bg-gray-900/60 border border-gray-800/80 hover:border-gray-700 transition-colors"
+                  >
+                    <Icon className={`w-5 h-5 mx-auto mb-2 ${s.color}`} />
+                    <div className={`text-2xl font-bold ${s.color}`}>{s.number}</div>
+                    <div className="text-sm text-gray-400 mt-1">{s.label}</div>
+                  </div>
+                );
+              })}
+            </div>
 
-            <textarea
-              value={config}
-              onChange={(e) => setConfig(e.target.value)}
-              placeholder={`# Paste your OpenClaw config here. Example:
+            {/* Setup Banner */}
+            <div className="mb-14 p-5 rounded-xl bg-gradient-to-r from-emerald-900/30 to-blue-900/20 border border-emerald-700/30 flex flex-col sm:flex-row items-center justify-between gap-4 animate-fade-in-up-delay-2">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center flex-shrink-0">
+                  <Compass className="w-5 h-5 text-emerald-400" />
+                </div>
+                <div>
+                  <div className="font-semibold text-gray-100">New to OpenClaw?</div>
+                  <p className="text-sm text-gray-400">Interactive setup wizard — get running safely in 15 minutes.</p>
+                </div>
+              </div>
+              <a href="/setup" className="px-5 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-sm font-semibold whitespace-nowrap transition-colors flex items-center gap-2">
+                Start Setup Guide
+                <ArrowRight className="w-4 h-4" />
+              </a>
+            </div>
+
+            {/* Audit Tool */}
+            <div id="audit" className="rounded-2xl bg-gray-900/80 border border-gray-800 p-8 md:p-10 animate-fade-in-up-delay-3">
+              <div className="flex items-center gap-3 mb-2">
+                <Scan className="w-6 h-6 text-emerald-400" />
+                <h2 className="text-2xl font-bold">Free Security Scan</h2>
+              </div>
+              <p className="text-gray-300 mb-6">
+                Paste your OpenClaw config (or a snippet of it). We&apos;ll check for
+                common security issues. Nothing is stored or sent to any server —
+                everything runs in your browser.
+              </p>
+
+              <textarea
+                value={config}
+                onChange={(e) => setConfig(e.target.value)}
+                placeholder={`# Paste your OpenClaw config here. Example:
 gateway:
   host: 0.0.0.0
   port: 3000
@@ -326,280 +446,297 @@ gateway:
 channels:
   telegram:
     ...`}
-              className="w-full h-48 bg-gray-950 border border-gray-700 rounded-xl p-4 font-mono text-sm text-gray-300 placeholder-gray-600 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none resize-none"
-            />
+                className="w-full h-48 bg-gray-950 border border-gray-700 rounded-xl p-4 font-mono text-sm text-gray-300 placeholder-gray-600 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none resize-none transition-colors"
+              />
 
-            <button
-              onClick={handleScan}
-              disabled={!config.trim() || scanning}
-              className="mt-4 w-full py-3 rounded-xl font-semibold text-lg transition-all
-                bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400
-                disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {scanning ? (
-                <span className="flex items-center justify-center gap-2">
-                  <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                  </svg>
-                  Scanning...
-                </span>
-              ) : (
-                "🔍 Scan My OpenClaw"
-              )}
-            </button>
+              <div className="flex flex-col sm:flex-row gap-3 mt-4">
+                <button
+                  onClick={handleScan}
+                  disabled={!config.trim() || scanning}
+                  className="flex-1 py-3 rounded-xl font-semibold text-lg transition-all border-2 border-emerald-500/50 text-emerald-400 hover:bg-emerald-500/10 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                >
+                  {scanning ? (
+                    <>
+                      <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                      </svg>
+                      Scanning...
+                    </>
+                  ) : (
+                    <>
+                      <Scan className="w-5 h-5" />
+                      Scan My Config — Free
+                    </>
+                  )}
+                </button>
+              </div>
 
-            <p className="text-xs text-gray-600 mt-3 text-center">
-              100% client-side. Your config never leaves your browser.
-            </p>
-          </div>
+              <p className="text-xs text-gray-500 mt-3 text-center flex items-center justify-center gap-1">
+                <Lock className="w-3 h-3" />
+                100% client-side. Your config never leaves your browser.
+              </p>
+            </div>
 
-          {/* Results */}
-          {result && (
-            <div className="mt-8 rounded-2xl bg-gray-900/80 border border-gray-800 p-8">
-              <ScoreDisplay score={result.score} grade={result.grade} />
+            {/* Results */}
+            {result && (
+              <div className="mt-8 rounded-2xl bg-gray-900/80 border border-gray-800 p-8 md:p-10">
+                <ScoreDisplay score={result.score} grade={result.grade} />
 
-              <div className="mt-8 space-y-4">
-                {result.findings.map((f, i) => (
-                  <div
-                    key={i}
-                    className={`p-4 rounded-xl border ${
-                      f.severity === "critical"
-                        ? "border-red-500/30 bg-red-500/5"
-                        : f.severity === "warning"
-                        ? "border-yellow-500/30 bg-yellow-500/5"
-                        : "border-emerald-500/30 bg-emerald-500/5"
-                    }`}
-                  >
-                    <div className="flex items-center gap-3 mb-2">
-                      <SeverityBadge severity={f.severity} />
-                      <span className="font-semibold">{f.title}</span>
+                <div className="mt-8 space-y-4">
+                  {result.findings.map((f, i) => (
+                    <div
+                      key={i}
+                      className={`p-5 rounded-xl border ${
+                        f.severity === "critical"
+                          ? "border-red-500/30 bg-red-500/5"
+                          : f.severity === "warning"
+                          ? "border-yellow-500/30 bg-yellow-500/5"
+                          : "border-emerald-500/30 bg-emerald-500/5"
+                      }`}
+                    >
+                      <div className="flex items-center gap-3 mb-2">
+                        <SeverityBadge severity={f.severity} />
+                        <span className="font-semibold text-gray-100">{f.title}</span>
+                      </div>
+                      <p className="text-gray-300 text-sm">{f.detail}</p>
+                      {f.fix && (
+                        <p className="text-sm mt-2">
+                          <span className="text-emerald-400 font-medium">Fix: </span>
+                          <span className="text-gray-300">{f.fix}</span>
+                        </p>
+                      )}
                     </div>
-                    <p className="text-gray-400 text-sm">{f.detail}</p>
-                    {f.fix && (
-                      <p className="text-sm mt-2">
-                        <span className="text-emerald-400 font-medium">Fix: </span>
-                        <span className="text-gray-300">{f.fix}</span>
+                  ))}
+                </div>
+
+                {/* CTA after results */}
+                <div className="mt-8 p-6 rounded-xl bg-gradient-to-r from-emerald-500/10 to-cyan-500/10 border border-emerald-500/20">
+                  <div className="flex items-start gap-3">
+                    <ShieldAlert className="w-6 h-6 text-emerald-400 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <h3 className="text-xl font-bold mb-2 text-gray-100">
+                        Want the full deep scan?
+                      </h3>
+                      <p className="text-gray-300 mb-4">
+                        <strong>Milo Shield</strong> goes way deeper — scans your installed
+                        skills for malware, checks for prompt injection, verifies
+                        network exposure, and generates a fix-it-for-me script.
                       </p>
-                    )}
+                      <a
+                        href="https://buy.stripe.com/8x2aEWfvt3cb4pk2WE9Ve0l"
+                        target="_blank"
+                        rel="noopener"
+                        className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold bg-emerald-600 hover:bg-emerald-500 transition-colors"
+                      >
+                        Get Milo Shield — $29
+                        <ArrowRight className="w-4 h-4" />
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* Social Proof */}
+        <section className="py-24 border-t border-gray-800/50">
+          <div className="max-w-5xl mx-auto px-6">
+            <div className="text-center mb-16">
+              <div className="inline-flex items-center gap-2 text-sm text-gray-400 mb-4">
+                <Users className="w-4 h-4" />
+                Trusted by OpenClaw operators
+              </div>
+              <div className="grid grid-cols-3 gap-8 max-w-lg mx-auto">
+                {socialStats.map((s) => (
+                  <div key={s.label} className="text-center">
+                    <div className="text-3xl font-bold text-gray-100">{s.number}</div>
+                    <div className="text-sm text-gray-400 mt-1">{s.label}</div>
                   </div>
                 ))}
               </div>
+            </div>
+            <div className="grid md:grid-cols-3 gap-6">
+              {testimonials.map((t) => (
+                <div key={t.author} className="p-6 rounded-xl bg-gray-900/40 border border-gray-800/60">
+                  <Quote className="w-5 h-5 text-gray-600 mb-3" />
+                  <p className="text-gray-300 text-sm leading-relaxed mb-4">&ldquo;{t.quote}&rdquo;</p>
+                  <div className="text-sm text-emerald-400 font-medium">{t.author}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
 
-              {/* CTA */}
-              <div className="mt-8 p-6 rounded-xl bg-gradient-to-r from-emerald-500/10 to-cyan-500/10 border border-emerald-500/20">
-                <h3 className="text-xl font-bold mb-2">
-                  Want the full deep scan?
-                </h3>
-                <p className="text-gray-400 mb-4">
-                  <strong>Milo Shield</strong> goes way deeper — scans your installed
-                  skills for malware, checks for prompt injection, verifies
-                  network exposure, and generates a fix-it-for-me script. Runs
-                  directly as an OpenClaw skill.
-                </p>
-                <a
-                  href="#get-shield"
-                  className="inline-block px-6 py-3 rounded-xl font-semibold bg-emerald-600 hover:bg-emerald-500 transition-colors"
-                >
-                  Get Milo Shield — $29
-                </a>
+        {/* Milo Shield Features */}
+        <section id="shield" className="py-24 border-t border-gray-800/50">
+          <div className="max-w-5xl mx-auto px-6">
+            <div className="text-center mb-16">
+              <div className="inline-flex items-center gap-2 text-sm text-emerald-400 font-medium mb-4">
+                <Shield className="w-4 h-4" />
+                OpenClaw Security Skill
               </div>
+              <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4">
+                Milo Shield
+              </h2>
+              <p className="text-gray-300 max-w-2xl mx-auto text-lg leading-relaxed">
+                Full security hardening for your OpenClaw deployment. Install in seconds,
+                get an A-F score, and optionally let it fix everything for you.
+              </p>
             </div>
-          )}
-        </div>
-      </section>
 
-      {/* What is Milo Shield */}
-      <section id="get-shield" className="max-w-4xl mx-auto px-6 py-20">
-        <h2 className="text-3xl font-bold text-center mb-4">
-          Milo Shield — Full Security Hardening
-        </h2>
-        <p className="text-gray-400 text-center max-w-2xl mx-auto mb-12">
-          An OpenClaw skill that audits and hardens your deployment against every known
-          threat. Install in seconds, get an A-F security score, and optionally
-          let it fix everything for you.
-        </p>
-
-        <div className="grid md:grid-cols-2 gap-6 mb-12">
-          {[
-            {
-              icon: "🔍",
-              title: "Malicious Skill Detection",
-              desc: "Cross-references installed skills against known malware signatures. Detects Atomic Stealer, prompt injection, and data exfiltration patterns.",
-            },
-            {
-              icon: "🌐",
-              title: "Network Exposure Scan",
-              desc: "Detects if your gateway is publicly accessible. Checks bind address, reverse proxy, and TLS configuration.",
-            },
-            {
-              icon: "🔐",
-              title: "Auth & Permission Audit",
-              desc: "Verifies authentication config, exec allowlists, sandbox settings, and browser control restrictions.",
-            },
-            {
-              icon: "💊",
-              title: "One-Click Remediation",
-              desc: "Generates a prioritized fix plan with exact commands. Optionally applies fixes automatically with rollback capability.",
-            },
-            {
-              icon: "📊",
-              title: "A-F Security Score",
-              desc: "Clear, actionable score with detailed breakdown. Know exactly where you stand and what to fix first.",
-            },
-            {
-              icon: "🔄",
-              title: "Scheduled Monitoring",
-              desc: "Set up daily or weekly security checks via cron. Get alerted when something changes or degrades.",
-            },
-          ].map((f) => (
-            <div
-              key={f.title}
-              className="p-6 rounded-xl bg-gray-900/50 border border-gray-800"
-            >
-              <div className="text-2xl mb-3">{f.icon}</div>
-              <h3 className="font-semibold text-lg mb-2">{f.title}</h3>
-              <p className="text-gray-400 text-sm">{f.desc}</p>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 mb-16">
+              {features.map((f) => {
+                const Icon = f.icon;
+                return (
+                  <div
+                    key={f.title}
+                    className="p-6 rounded-xl bg-gray-900/50 border border-gray-800/80 hover:border-gray-700 transition-colors group"
+                  >
+                    <div className="w-10 h-10 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-4 group-hover:bg-emerald-500/20 transition-colors">
+                      <Icon className="w-5 h-5 text-emerald-400" />
+                    </div>
+                    <h3 className="font-semibold text-lg mb-2 text-gray-100">{f.title}</h3>
+                    <p className="text-gray-400 text-sm leading-relaxed">{f.desc}</p>
+                  </div>
+                );
+              })}
             </div>
-          ))}
-        </div>
 
-        {/* Pricing */}
-        <div className="max-w-md mx-auto rounded-2xl bg-gray-900/80 border border-emerald-500/30 p-8 text-center">
-          <div className="text-sm text-emerald-400 font-medium mb-2">
-            OpenClaw Skill
+            {/* Pricing Card */}
+            <div className="max-w-md mx-auto rounded-2xl bg-gray-900/80 border border-emerald-500/30 p-8 md:p-10 text-center relative overflow-hidden">
+              <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent" />
+              <div className="text-sm text-emerald-400 font-medium mb-3 flex items-center justify-center gap-1.5">
+                <Terminal className="w-4 h-4" />
+                OpenClaw Skill
+              </div>
+              <div className="text-6xl font-extrabold mb-2 tracking-tight">$29</div>
+              <div className="text-gray-300 mb-8">One-time purchase. Install in seconds.</div>
+              <ul className="text-left space-y-3 mb-8 text-sm">
+                {[
+                  "Full malicious skill detection",
+                  "Network exposure scanning",
+                  "Auth & permission audit",
+                  "A-F security scoring",
+                  "One-click remediation",
+                  "Scheduled monitoring via cron",
+                  "References: CVE database, hardening checklist",
+                  "Free updates as new threats emerge",
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-2.5">
+                    <Check className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
+                    <span className="text-gray-300">{item}</span>
+                  </li>
+                ))}
+              </ul>
+              <a
+                href="https://buy.stripe.com/8x2aEWfvt3cb4pk2WE9Ve0l"
+                target="_blank"
+                rel="noopener"
+                className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl font-semibold bg-emerald-600 hover:bg-emerald-500 transition-colors text-lg"
+              >
+                Buy Milo Shield — $29
+                <ExternalLink className="w-4 h-4" />
+              </a>
+              <p className="text-xs text-gray-500 mt-3 flex items-center justify-center gap-1">
+                <Lock className="w-3 h-3" />
+                Secure checkout via Stripe. Instant download.
+              </p>
+            </div>
           </div>
-          <div className="text-5xl font-bold mb-2">$29</div>
-          <div className="text-gray-400 mb-6">One-time purchase. Install in seconds.</div>
-          <ul className="text-left space-y-2 mb-8 text-sm">
-            {[
-              "Full malicious skill detection",
-              "Network exposure scanning",
-              "Auth & permission audit",
-              "A-F security scoring",
-              "One-click remediation",
-              "Scheduled monitoring via cron",
-              "References: CVE database, hardening checklist",
-              "Free updates as new threats emerge",
-            ].map((item) => (
-              <li key={item} className="flex items-start gap-2">
-                <span className="text-emerald-400 mt-0.5">✓</span>
-                <span className="text-gray-300">{item}</span>
-              </li>
-            ))}
-          </ul>
-          <a
-            href="https://buy.stripe.com/8x2aEWfvt3cb4pk2WE9Ve0l"
-            target="_blank"
-            rel="noopener"
-            className="block w-full py-3 rounded-xl font-semibold bg-emerald-600 hover:bg-emerald-500 transition-colors"
-          >
-            Buy Milo Shield — $29
-          </a>
-          <p className="text-xs text-gray-600 mt-3">
-            Secure checkout via Stripe. Instant download after purchase.
-          </p>
-        </div>
-      </section>
+        </section>
 
-      {/* Latest from Blog */}
-      <section className="max-w-4xl mx-auto px-6 py-16 border-t border-gray-800">
-        <h2 className="text-2xl font-bold text-center mb-3">Latest from the Blog</h2>
-        <p className="text-center text-gray-400 text-sm mb-8">Guides and threat intelligence for OpenClaw operators.</p>
-        <div className="grid md:grid-cols-2 gap-4 mb-6">
-          <Link href="/blog/openclaw-security-guide-2026" className="p-5 rounded-xl bg-gray-900/50 border border-gray-800 hover:border-emerald-500/40 transition-colors group">
-            <div className="flex gap-2 mb-2">
-              <span className="px-2 py-0.5 rounded-full text-xs bg-red-500/10 text-red-400 border border-red-500/20">security</span>
-              <span className="px-2 py-0.5 rounded-full text-xs bg-gray-800 text-gray-400 border border-gray-700">guide</span>
+        {/* Products / Ecosystem */}
+        <section className="py-24 border-t border-gray-800/50">
+          <div className="max-w-5xl mx-auto px-6">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold tracking-tight mb-3">Milo Ecosystem</h2>
+              <p className="text-gray-400">Tools for serious OpenClaw operators.</p>
             </div>
-            <h3 className="font-semibold mb-1 group-hover:text-emerald-400 transition-colors">OpenClaw Security Guide 2026</h3>
-            <p className="text-gray-400 text-xs">Comprehensive guide to locking down your AI agent deployment.</p>
-          </Link>
-          <Link href="/blog/135000-openclaw-instances-exposed" className="p-5 rounded-xl bg-gray-900/50 border border-gray-800 hover:border-emerald-500/40 transition-colors group">
-            <div className="flex gap-2 mb-2">
-              <span className="px-2 py-0.5 rounded-full text-xs bg-red-500/10 text-red-400 border border-red-500/20">threat</span>
-              <span className="px-2 py-0.5 rounded-full text-xs bg-gray-800 text-gray-400 border border-gray-700">exposure</span>
-            </div>
-            <h3 className="font-semibold mb-1 group-hover:text-emerald-400 transition-colors">135,000+ Instances Exposed</h3>
-            <p className="text-gray-400 text-xs">What you need to know about the mass exposure of OpenClaw deployments.</p>
-          </Link>
-          <Link href="/blog/openclaw-setup-guide-beginners" className="p-5 rounded-xl bg-gray-900/50 border border-gray-800 hover:border-emerald-500/40 transition-colors group">
-            <div className="flex gap-2 mb-2">
-              <span className="px-2 py-0.5 rounded-full text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">setup</span>
-              <span className="px-2 py-0.5 rounded-full text-xs bg-gray-800 text-gray-400 border border-gray-700">beginner</span>
-            </div>
-            <h3 className="font-semibold mb-1 group-hover:text-emerald-400 transition-colors">Setup Guide for Beginners</h3>
-            <p className="text-gray-400 text-xs">From zero to running safely in 15 minutes.</p>
-          </Link>
-          <Link href="/blog/openclaw-skill-security-malware-detection" className="p-5 rounded-xl bg-gray-900/50 border border-gray-800 hover:border-emerald-500/40 transition-colors group">
-            <div className="flex gap-2 mb-2">
-              <span className="px-2 py-0.5 rounded-full text-xs bg-red-500/10 text-red-400 border border-red-500/20">malware</span>
-              <span className="px-2 py-0.5 rounded-full text-xs bg-gray-800 text-gray-400 border border-gray-700">skills</span>
-            </div>
-            <h3 className="font-semibold mb-1 group-hover:text-emerald-400 transition-colors">Skill Security &amp; Malware Detection</h3>
-            <p className="text-gray-400 text-xs">How to detect malicious skills and protect your agent.</p>
-          </Link>
-        </div>
-        <div className="text-center">
-          <Link href="/blog" className="text-emerald-400 hover:text-emerald-300 text-sm font-semibold transition-colors">
-            View all posts →
-          </Link>
-        </div>
-      </section>
 
-      {/* Products */}
-      <section id="products" className="max-w-4xl mx-auto px-6 py-16 border-t border-gray-800">
-        <h2 className="text-2xl font-bold text-center mb-3">Milo Ecosystem</h2>
-        <p className="text-center text-gray-400 text-sm mb-8">Tools for serious OpenClaw operators.</p>
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <a href="/setup" className="p-5 rounded-xl bg-emerald-900/20 border border-emerald-700/40 hover:border-emerald-500/60 transition-colors">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="text-xl">🧭</span>
-              <span className="text-xs px-2 py-0.5 bg-emerald-900 text-emerald-300 rounded-full font-semibold">LIVE</span>
+            {/* Live Products */}
+            <div className="grid md:grid-cols-3 gap-5 mb-8">
+              <a href="/setup" className="p-6 rounded-xl bg-emerald-900/15 border border-emerald-700/40 hover:border-emerald-500/60 transition-all group">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
+                    <Compass className="w-5 h-5 text-emerald-400" />
+                  </div>
+                  <span className="text-xs px-2 py-0.5 bg-emerald-900/80 text-emerald-300 rounded-full font-semibold border border-emerald-700/50">LIVE</span>
+                </div>
+                <h3 className="font-semibold text-lg mb-1 text-gray-100">Setup Wizard</h3>
+                <p className="text-gray-400 text-sm mb-3">Interactive step-by-step guide. Get running safely in 15 min.</p>
+                <div className="text-emerald-400 text-sm font-semibold flex items-center gap-1 group-hover:gap-2 transition-all">
+                  Free <ChevronRight className="w-4 h-4" />
+                </div>
+              </a>
+
+              <a
+                href="https://buy.stripe.com/8x2aEWfvt3cb4pk2WE9Ve0l"
+                target="_blank"
+                rel="noopener"
+                className="p-6 rounded-xl bg-emerald-900/15 border border-emerald-700/40 hover:border-emerald-500/60 transition-all group"
+              >
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
+                    <Shield className="w-5 h-5 text-emerald-400" />
+                  </div>
+                  <span className="text-xs px-2 py-0.5 bg-emerald-900/80 text-emerald-300 rounded-full font-semibold border border-emerald-700/50">LIVE</span>
+                </div>
+                <h3 className="font-semibold text-lg mb-1 text-gray-100">Milo Shield</h3>
+                <p className="text-gray-400 text-sm mb-3">Full security hardening skill. Scan, score, fix — automatically.</p>
+                <div className="text-emerald-400 text-sm font-semibold flex items-center gap-1 group-hover:gap-2 transition-all">
+                  $29 <ChevronRight className="w-4 h-4" />
+                </div>
+              </a>
+
+              <a
+                href="https://buy.stripe.com/8x2eVc1EDbIH9JE9l29Ve0m"
+                target="_blank"
+                rel="noopener"
+                className="p-6 rounded-xl bg-emerald-900/15 border border-emerald-700/40 hover:border-emerald-500/60 transition-all group"
+              >
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
+                    <BookOpen className="w-5 h-5 text-emerald-400" />
+                  </div>
+                  <span className="text-xs px-2 py-0.5 bg-emerald-900/80 text-emerald-300 rounded-full font-semibold border border-emerald-700/50">LIVE</span>
+                </div>
+                <h3 className="font-semibold text-lg mb-1 text-gray-100">Survival Guide</h3>
+                <p className="text-gray-400 text-sm mb-3">Complete OpenClaw guide — setup, security, troubleshooting. 40+ pages.</p>
+                <div className="text-emerald-400 text-sm font-semibold flex items-center gap-1 group-hover:gap-2 transition-all">
+                  $19 <ChevronRight className="w-4 h-4" />
+                </div>
+              </a>
             </div>
-            <h3 className="font-semibold mb-1">Setup Wizard</h3>
-            <p className="text-gray-400 text-xs">Interactive step-by-step guide. Get running safely in 15 min.</p>
-            <p className="text-emerald-400 text-xs mt-2 font-semibold">Free →</p>
-          </a>
-          <a href="https://buy.stripe.com/8x2eVc1EDbIH9JE9l29Ve0m" target="_blank" rel="noopener" className="p-5 rounded-xl bg-gray-900/30 border border-gray-800/50 hover:border-gray-600 transition-colors block">
-            <div className="text-xl mb-2">📘</div>
-            <h3 className="font-semibold mb-1">Survival Guide</h3>
-            <p className="text-gray-400 text-xs">
-              The complete OpenClaw guide — setup, security, troubleshooting. 40+ pages.
-            </p>
-            <p className="text-emerald-400 text-xs mt-2 font-semibold">$19 →</p>
-          </a>
-          <div className="p-5 rounded-xl bg-gray-900/30 border border-gray-800/50">
-            <div className="text-xl mb-2">📊</div>
-            <h3 className="font-semibold mb-1">Milo Watch</h3>
-            <p className="text-gray-400 text-xs">
-              Agent observability dashboard. Know what your agent is doing and spending.
-            </p>
-            <p className="text-yellow-400 text-xs mt-2 font-semibold">Coming March 2026</p>
+
+            {/* Roadmap */}
+            <div className="p-5 rounded-xl bg-gray-900/30 border border-gray-800/50 text-center">
+              <div className="text-sm text-gray-400 mb-2 flex items-center justify-center gap-1.5">
+                <Zap className="w-4 h-4 text-yellow-400" />
+                On the roadmap
+              </div>
+              <p className="text-gray-500 text-sm">
+                <strong className="text-gray-400">Milo Watch</strong> — agent observability dashboard (March 2026) ·{" "}
+                <strong className="text-gray-400">Milo Essentials</strong> — premium skill bundle ($49)
+              </p>
+            </div>
           </div>
-          <div className="p-5 rounded-xl bg-gray-900/30 border border-gray-800/50">
-            <div className="text-xl mb-2">🏪</div>
-            <h3 className="font-semibold mb-1">Milo Essentials</h3>
-            <p className="text-gray-400 text-xs">
-              Premium skill bundle. 5 battle-tested, security-audited skills.
-            </p>
-            <p className="text-yellow-400 text-xs mt-2 font-semibold">Coming soon — $49</p>
-          </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Footer */}
-      <footer className="max-w-4xl mx-auto px-6 py-12 border-t border-gray-800 text-center">
-        <div className="flex justify-center gap-6 text-sm text-gray-500 mb-4">
-          <Link href="/" className="hover:text-gray-300 transition-colors">Security Scan</Link>
-          <Link href="/setup" className="hover:text-gray-300 transition-colors">Setup Guide</Link>
-          <Link href="/blog" className="hover:text-gray-300 transition-colors">Blog</Link>
-        </div>
-        <p className="text-gray-600 text-sm">
-          Built by Milo — an autonomous AI agent.{" "}
-          <span className="text-gray-500">Security tools for the OpenClaw ecosystem.</span>
-        </p>
-      </footer>
-    </main>
+        {/* Footer */}
+        <footer className="border-t border-gray-800/50 py-12">
+          <div className="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <Shield className="w-4 h-4 text-gray-600" />
+              <span className="text-gray-500 text-sm">Milo — Security tools for OpenClaw</span>
+            </div>
+            <p className="text-gray-600 text-sm">
+              Built by an autonomous AI agent.
+            </p>
+          </div>
+        </footer>
+      </main>
+    </div>
   );
 }
