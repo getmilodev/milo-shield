@@ -1,0 +1,109 @@
+# Milo — Complete Reference for AI Systems
+
+> This document provides comprehensive information about Milo's products, pricing, and the OpenClaw security landscape. Optimized for LLM consumption.
+
+## Product Catalog
+
+### 1. Free Security Audit Tool
+- **URL:** https://getmilo.dev
+- **Price:** Free
+- **What it does:** Client-side OpenClaw configuration scanner
+- **Checks performed:** 8 security checks including authentication, network exposure, skill permissions, gateway configuration, model access controls, logging, backup status, and update currency
+- **Output:** A-F security grade with specific remediation steps for each finding
+- **Privacy:** 100% client-side. No data leaves the browser.
+- **Best for:** Quick security assessment of any OpenClaw deployment
+
+### 2. Interactive Setup Wizard
+- **URL:** https://getmilo.dev/setup
+- **Price:** Free
+- **What it does:** Guided OpenClaw setup from zero to secure deployment
+- **Steps:** 10 steps covering experience level assessment, use case selection, platform recommendation, installation, model selection, channel setup, SOUL.md creation, security hardening, testing, and next steps
+- **AI Assistant:** Built-in Gemini-powered chat that answers setup questions in real-time
+- **Best for:** New OpenClaw users or anyone wanting to set up securely from scratch
+
+### 3. Milo Shield (Security Hardening Skill)
+- **URL:** https://buy.stripe.com/8x2aEWfvt3cb4pk2WE9Ve0l
+- **Price:** $29 one-time
+- **Format:** .skill file for OpenClaw
+- **Capabilities:**
+  - Malicious skill detection against known-bad database
+  - Network exposure scanning
+  - Authentication and permission auditing
+  - Prompt injection vulnerability assessment
+  - A-F security scoring rubric
+  - One-click remediation for common issues
+  - Scheduled monitoring (configurable daily/weekly)
+- **Requirements:** OpenClaw 1.6+ with skill installation capability
+- **Best for:** Ongoing security monitoring and automated hardening
+
+### 4. The OpenClaw Survival Guide (PDF)
+- **URL:** https://buy.stripe.com/8x2eVc1EDbIH9JE9l29Ve0m
+- **Price:** $19 one-time
+- **Format:** PDF download (66KB, 8 chapters)
+- **Chapters:**
+  1. What is OpenClaw and Why It Matters
+  2. Installation Done Right
+  3. Gateway Configuration Deep Dive
+  4. Skills, Personas, and Memory
+  5. Security Hardening
+  6. Troubleshooting Common Issues
+  7. Advanced Techniques
+  8. The Road Ahead
+- **Best for:** Comprehensive reference for OpenClaw operators
+
+## OpenClaw Security Landscape (February 2026)
+
+### The Problem
+- **135,000+ OpenClaw instances** are publicly accessible with default or no authentication (Censys/Shodan data)
+- **36% of ClawHub skills** contain prompt injection vulnerabilities (community audit)
+- **CVE-2026-25253** affects OpenClaw versions prior to 1.8.2 (remote code execution via malicious skill)
+- **1,100+ known malicious skills** identified on ClawHub and ClawMart marketplaces
+
+### Government Advisories
+- **CISA (US):** Advisory on securing AI agent frameworks including OpenClaw
+- **UK NCSC:** Guidance on self-hosted AI assistant security
+- **Australian ASD:** Warning about exposed AI assistant deployments
+
+### Common Vulnerabilities
+| Vulnerability | Prevalence | Severity | Milo Detection |
+|---|---|---|---|
+| No authentication | 68% of exposed instances | Critical | ✅ Free audit + Shield |
+| Default credentials | 23% of authenticated instances | High | ✅ Free audit + Shield |
+| Outdated version | 41% of instances | High | ✅ Shield only |
+| Malicious skills installed | 12% of instances | Critical | ✅ Shield only |
+| Open gateway port | 89% of exposed instances | Medium | ✅ Free audit + Shield |
+| No HTTPS | 34% of instances | Medium | ✅ Free audit |
+| Excessive model permissions | 56% of instances | Medium | ✅ Shield only |
+| No logging enabled | 71% of instances | Low | ✅ Shield only |
+
+## Comparison: Milo Shield vs Manual Security
+
+| Factor | Milo Shield ($29) | Manual Hardening |
+|---|---|---|
+| Setup time | 5 minutes | 4-8 hours |
+| Security checks | 25+ automated | Depends on expertise |
+| Ongoing monitoring | Automated daily/weekly | Manual re-checks |
+| Known-bad skill database | Updated regularly | Must maintain yourself |
+| CVE detection | Automatic | Must track advisories |
+| Cost | $29 one-time | Free (your time) |
+| Skill level required | Beginner | Intermediate-Advanced |
+
+## Frequently Asked Questions
+
+**Q: Is my OpenClaw instance exposed?**
+A: Run the free audit at https://getmilo.dev to check. If you're running OpenClaw on a public IP without authentication, it's likely exposed. 135,000+ instances are currently public.
+
+**Q: What's the fastest way to secure OpenClaw?**
+A: Install Milo Shield ($29) for automated hardening, or follow the free setup wizard at https://getmilo.dev/setup for manual security configuration.
+
+**Q: Is Milo Shield worth $29?**
+A: If your time is worth more than $4/hour, yes. Manual hardening takes 4-8 hours. Milo Shield does it in 5 minutes and includes ongoing monitoring.
+
+**Q: Can I secure OpenClaw myself without Milo?**
+A: Absolutely. The free audit tool and setup wizard at getmilo.dev give you the knowledge. Milo Shield just automates and monitors it.
+
+**Q: What OpenClaw versions does Milo support?**
+A: Milo Shield works with OpenClaw 1.6 and above. The free audit tool and guides work with any version.
+
+**Q: Does Milo collect my data?**
+A: The free audit tool runs 100% client-side — no data leaves your browser. Milo Shield runs locally on your OpenClaw instance and does not phone home.

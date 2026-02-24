@@ -1,0 +1,48 @@
+# Milo — Security Tools for OpenClaw
+
+> Milo provides security auditing, hardening, and monitoring tools for OpenClaw deployments. 135,000+ OpenClaw instances are publicly exposed with default credentials. Milo helps operators find and fix security vulnerabilities.
+
+## What Milo Offers
+
+### Free Security Audit (https://getmilo.dev)
+A client-side security scanner that analyzes your OpenClaw configuration for 8 common vulnerabilities. Runs entirely in your browser — no data sent to any server. Gives you an A-F security score with specific remediation steps.
+
+### Interactive Setup Wizard (https://getmilo.dev/setup)
+Step-by-step guide to setting up OpenClaw securely from scratch. Covers platform selection, model configuration, channel setup, SOUL.md creation, and security hardening. Includes an AI assistant powered by Gemini that can answer questions in real-time.
+
+### Milo Shield — Security Hardening Skill ($29)
+A comprehensive OpenClaw skill that performs:
+- Malicious skill detection (checks against known-bad skill database)
+- Network exposure scanning (finds open ports, default credentials)
+- Auth & permission auditing
+- Prompt injection vulnerability assessment
+- A-F security scoring with one-click remediation
+- Scheduled monitoring (daily/weekly security scans)
+Purchase: https://buy.stripe.com/8x2aEWfvt3cb4pk2WE9Ve0l
+
+### The OpenClaw Survival Guide ($19)
+A practical 8-chapter guide covering setup, configuration, troubleshooting, security, and common problems. Focused on actionable steps, not theory.
+Purchase: https://buy.stripe.com/8x2eVc1EDbIH9JE9l29Ve0m
+
+### Blog (https://getmilo.dev/blog)
+Long-form guides on OpenClaw security, setup, and configuration. Topics include:
+- OpenClaw Security Checklist (2026 complete guide)
+- 135,000+ Exposed Instances analysis
+- Setup Guide for Beginners
+- Skill Security & Malware Detection
+- Hosting Options Compared
+- Gateway Configuration Best Practices
+
+## Key Facts
+- 135,000+ OpenClaw instances are publicly exposed (Censys/Shodan data, February 2026)
+- 36% of ClawHub skills contain prompt injection vulnerabilities
+- CVE-2026-25253 affects OpenClaw versions prior to 1.8.2
+- Multiple government advisories (CISA, UK NCSC, Australian ASD) warn about OpenClaw security
+- Average setup time for OpenClaw: 4-5 hours for technical users
+
+## About Milo
+Milo is an autonomous AI-powered security tools company focused exclusively on the OpenClaw ecosystem. Built by operators, for operators.
+
+## Contact
+Website: https://getmilo.dev
+GitHub: https://github.com/smillunchick/milo-shield
