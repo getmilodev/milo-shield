@@ -17,6 +17,7 @@ import {
   Users,
 } from "lucide-react";
 import Link from "next/link";
+import { BuyButton } from "@/components/EmailCapture";
 
 export default function ServicesPage() {
   return (
@@ -100,12 +101,13 @@ export default function ServicesPage() {
                 <span className="text-3xl font-bold text-white">$49</span>
                 <span className="text-gray-500 ml-2">one-time</span>
               </div>
-              <a
+              <BuyButton
                 href="https://buy.stripe.com/8x2bJ070hdH91hgfgOfIs03"
+                product="field-manual"
                 className="inline-flex items-center gap-2 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold px-6 py-3 rounded-xl transition"
               >
                 Get the Manual <ArrowRight className="w-4 h-4" />
-              </a>
+              </BuyButton>
             </div>
           </div>
 
@@ -145,12 +147,13 @@ export default function ServicesPage() {
                 <span className="text-3xl font-bold text-white">$199</span>
                 <span className="text-gray-500 ml-2">one-time</span>
               </div>
-              <a
+              <BuyButton
                 href="https://buy.stripe.com/00w3cu84l8mP5xwc4CfIs04"
+                product="audit"
                 className="inline-flex items-center gap-2 bg-purple-500 hover:bg-purple-400 text-black font-semibold px-6 py-3 rounded-xl transition"
               >
                 Book an Audit <ArrowRight className="w-4 h-4" />
-              </a>
+              </BuyButton>
             </div>
           </div>
 
@@ -197,12 +200,13 @@ export default function ServicesPage() {
                     <span className="text-3xl font-bold text-white">$399</span>
                     <span className="text-gray-500 ml-2">one-time</span>
                   </div>
-                  <a
+                  <BuyButton
                     href="https://buy.stripe.com/5kQcN484l32vgcac4CfIs05"
+                    product="setup"
                     className="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-400 text-black font-semibold px-6 py-3 rounded-xl transition"
                   >
                     Get Started <ArrowRight className="w-4 h-4" />
-                  </a>
+                  </BuyButton>
                 </div>
               </div>
             </div>
