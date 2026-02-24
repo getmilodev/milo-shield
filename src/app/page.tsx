@@ -266,6 +266,7 @@ function Nav() {
           <a href="#audit" className="text-sm text-gray-400 hover:text-gray-100 transition-colors">Audit</a>
           <a href="#shield" className="text-sm text-gray-400 hover:text-gray-100 transition-colors">Shield</a>
           <a href="/setup" className="text-sm text-gray-400 hover:text-gray-100 transition-colors">Setup</a>
+          <a href="/blog" className="text-sm text-gray-400 hover:text-gray-100 transition-colors">Blog</a>
           <a
             href="https://buy.stripe.com/8x2eVc1EDbIH9JE9l29Ve0m"
             target="_blank"
