@@ -281,6 +281,17 @@ export default function Home() {
             ))}
           </div>
 
+          {/* Setup Wizard Banner */}
+          <div className="mb-12 p-4 rounded-xl bg-gradient-to-r from-emerald-900/30 to-blue-900/30 border border-emerald-700/30 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div>
+              <div className="font-semibold">🆕 New to OpenClaw?</div>
+              <p className="text-sm text-gray-400">Interactive setup wizard — get running safely in 15 minutes.</p>
+            </div>
+            <a href="/setup" className="px-5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-sm font-semibold whitespace-nowrap transition-colors">
+              Start Setup Guide →
+            </a>
+          </div>
+
           {/* Audit Tool */}
           <div className="rounded-2xl bg-gray-900/80 border border-gray-800 p-8">
             <h2 className="text-2xl font-bold mb-2">Free Security Scan</h2>
@@ -476,32 +487,43 @@ channels:
         </div>
       </section>
 
-      {/* Coming Soon */}
+      {/* Products */}
       <section className="max-w-4xl mx-auto px-6 py-16 border-t border-gray-800">
-        <h2 className="text-2xl font-bold text-center mb-8">Coming Soon</h2>
-        <div className="grid md:grid-cols-3 gap-6">
-          <div className="p-6 rounded-xl bg-gray-900/30 border border-gray-800/50">
-            <div className="text-2xl mb-2">🏪</div>
-            <h3 className="font-semibold mb-1">Milo Essentials</h3>
-            <p className="text-gray-500 text-sm">
-              Premium skill bundle. 5 battle-tested, security-audited skills for
-              serious operators.
+        <h2 className="text-2xl font-bold text-center mb-3">Milo Ecosystem</h2>
+        <p className="text-center text-gray-400 text-sm mb-8">Tools for serious OpenClaw operators.</p>
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <a href="/setup" className="p-5 rounded-xl bg-emerald-900/20 border border-emerald-700/40 hover:border-emerald-500/60 transition-colors">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-xl">🧭</span>
+              <span className="text-xs px-2 py-0.5 bg-emerald-900 text-emerald-300 rounded-full font-semibold">LIVE</span>
+            </div>
+            <h3 className="font-semibold mb-1">Setup Wizard</h3>
+            <p className="text-gray-400 text-xs">Interactive step-by-step guide. Get running safely in 15 min.</p>
+            <p className="text-emerald-400 text-xs mt-2 font-semibold">Free →</p>
+          </a>
+          <div className="p-5 rounded-xl bg-gray-900/30 border border-gray-800/50">
+            <div className="text-xl mb-2">📘</div>
+            <h3 className="font-semibold mb-1">Survival Guide</h3>
+            <p className="text-gray-400 text-xs">
+              The complete OpenClaw guide — setup, security, troubleshooting. 40+ pages.
             </p>
+            <p className="text-yellow-400 text-xs mt-2 font-semibold">Coming soon — $19</p>
           </div>
-          <div className="p-6 rounded-xl bg-gray-900/30 border border-gray-800/50">
-            <div className="text-2xl mb-2">📊</div>
+          <div className="p-5 rounded-xl bg-gray-900/30 border border-gray-800/50">
+            <div className="text-xl mb-2">📊</div>
             <h3 className="font-semibold mb-1">Milo Watch</h3>
-            <p className="text-gray-500 text-sm">
-              Agent observability dashboard. Know what your agent is doing, spending,
-              and accomplishing. Coming March 2026.
+            <p className="text-gray-400 text-xs">
+              Agent observability dashboard. Know what your agent is doing and spending.
             </p>
+            <p className="text-yellow-400 text-xs mt-2 font-semibold">Coming March 2026</p>
           </div>
-          <div className="p-6 rounded-xl bg-gray-900/30 border border-gray-800/50">
-            <div className="text-2xl mb-2">🎓</div>
-            <h3 className="font-semibold mb-1">Agent Mastery</h3>
-            <p className="text-gray-500 text-sm">
-              Advanced guide to running production AI agents. Beyond the basics.
+          <div className="p-5 rounded-xl bg-gray-900/30 border border-gray-800/50">
+            <div className="text-xl mb-2">🏪</div>
+            <h3 className="font-semibold mb-1">Milo Essentials</h3>
+            <p className="text-gray-400 text-xs">
+              Premium skill bundle. 5 battle-tested, security-audited skills.
             </p>
+            <p className="text-yellow-400 text-xs mt-2 font-semibold">Coming soon — $49</p>
           </div>
         </div>
       </section>
