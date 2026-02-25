@@ -42,6 +42,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="dark">
+      <head>
+        <script defer data-domain="getmilo.dev" src="https://plausible.io/js/script.js"></script>
+      </head>
       <body className={`${inter.variable} ${jetbrainsMono.variable} font-sans bg-gray-950 text-gray-100 antialiased`}>
         {children}
       </body>

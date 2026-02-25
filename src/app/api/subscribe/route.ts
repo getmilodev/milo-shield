@@ -17,7 +17,10 @@ const WEBHOOK_URL = process.env.LEADS_WEBHOOK_URL || "";
 const STRIPE_KEY = process.env.STRIPE_KEY_MILO || "";
 
 function isValidEmail(email: string): boolean {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && email.length <= 254;
+  // Basic format check + length limit + block HTML/script injection
+  if (email.length > 254) return false;
+  if (/<|>|"|'|`|;|\(|\)|{|}|\[|\]/.test(email)) return false;
+  return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/.test(email);
 }
 
 // Rate limit: max 5 submissions per IP per hour
